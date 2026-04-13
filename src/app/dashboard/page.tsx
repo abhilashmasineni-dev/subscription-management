@@ -7,11 +7,10 @@ import { SubscriptionCard } from './SubscriptionCard'
 import { RealtimeHandler } from './RealtimeHandler'
 import { cn } from '@/utils/cn'
 
-export default async function DashboardPage({
-  searchParams,
-}: {
-  searchParams: { tab?: string; sortBy?: string; order?: string }
+export default async function DashboardPage(props: {
+  searchParams: Promise<{ tab?: string; sortBy?: string; order?: string }>
 }) {
+  const searchParams = await props.searchParams
   const supabase = await createClient()
 
   const {
