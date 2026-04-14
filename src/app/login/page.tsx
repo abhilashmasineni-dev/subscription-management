@@ -1,12 +1,11 @@
-import { login, signup } from './actions'
+import { login, signup } from '../auth/actions'
 import { cn } from '@/utils/cn'
 import { LogIn, UserPlus } from 'lucide-react'
 
-export default function LoginPage({
-  searchParams,
-}: {
-  searchParams: { error?: string }
+export default async function LoginPage(props: {
+  searchParams: Promise<{ error?: string }>
 }) {
+  const searchParams = await props.searchParams
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <div className="w-full max-w-md space-y-8 rounded-2xl border border-border bg-card p-8 shadow-xl">
