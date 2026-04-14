@@ -29,7 +29,7 @@ export function EditSubscriptionModal({ subscription }: Props) {
         await updateSubscription(subscription.id, formData)
         setIsOpen(false)
       } catch (e: unknown) {
-        setError((e as any).message || 'Something went wrong')
+        setError(e instanceof Error ? e.message : 'Something went wrong')
       }
     })
   }

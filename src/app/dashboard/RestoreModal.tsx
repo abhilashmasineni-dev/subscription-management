@@ -29,7 +29,7 @@ export function RestoreModal({ subscription, source }: Props) {
         await restoreSubscription(subscription.id, source)
         setIsOpen(false)
       } catch (e: unknown) {
-        setError((e as any).message || 'Something went wrong')
+        setError(e instanceof Error ? e.message : 'Something went wrong')
       }
     })
   }

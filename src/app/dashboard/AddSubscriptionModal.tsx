@@ -16,7 +16,7 @@ export function AddSubscriptionModal() {
         await addSubscription(formData)
         setIsOpen(false)
       } catch (e: unknown) {
-        setError((e as any).message || 'Something went wrong')
+        setError(e instanceof Error ? e.message : 'Something went wrong')
       }
     })
   }
