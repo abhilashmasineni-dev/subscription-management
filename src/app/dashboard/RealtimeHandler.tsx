@@ -25,6 +25,7 @@ export function RealtimeHandler({ userId }: { userId: string }) {
         .lt('expiration_date', oneMinuteFromNow.toISOString())
 
       data?.forEach((sub) => {
+        if (!notifiedIds.has(sub.id)) {
           const renewalTime = new Date(sub.expiration_date)
           const timeLabel = isNaN(renewalTime.getTime()) ? 'N/A' : renewalTime.toLocaleTimeString()
           
