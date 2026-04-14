@@ -40,44 +40,56 @@ export default async function DashboardPage(props: {
   // Fetch subscriptions based on tab
   let subscriptions: Subscription[] = []
   let totalSpending = 0
+  let isTableMissing = false
 
-  if (currentTab === 'active' || currentTab === 'disabled') {
-    const { data } = await supabase
-      .from('active_subscriptions')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('status', currentTab)
-      .order(sortBy, { ascending: sortOrder })
-    
-    subscriptions = data || []
-    
-    // Calculate total spending only for active subscriptions
-    if (currentTab === 'active') {
-      totalSpending = subscriptions.reduce((sum, sub) => sum + Number(sub.cost), 0)
-    } else {
-      // Still fetch active to show total spending in header
-      const { data: activeData } = await supabase
+  try {
+    if (currentTab === 'active' || currentTab === 'disabled') {
+      const { data, error } = await supabase
         .from('active_subscriptions')
-        .select('cost')
+        .select('*')
         .eq('user_id', user.id)
-        .eq('status', 'active')
-      totalSpending = activeData?.reduce((sum, sub) => sum + Number(sub.cost), 0) || 0
+        .eq('status', currentTab)
+        .order(sortBy, { ascending: sortOrder })
+      
+      if (error && (error.code === 'PGRST116' || error.message.includes('not found') || error.message.includes('does not exist'))) {
+        isTableMissing = true
+      }
+      subscriptions = data || []
+      
+      // Calculate total spending
+      if (currentTab === 'active') {
+        totalSpending = subscriptions.reduce((sum, sub) => sum + Number(sub.cost), 0)
+      } else {
+        const { data: activeData } = await supabase
+          .from('active_subscriptions')
+          .select('cost')
+          .eq('user_id', user.id)
+          .eq('status', 'active')
+        totalSpending = activeData?.reduce((sum, sub) => sum + Number(sub.cost), 0) || 0
+      }
+    } else if (currentTab === 'expired') {
+      const { data, error } = await supabase
+        .from('expired_subscriptions')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('status', 'expired')
+        .order('expired_at', { ascending: false })
+      
+      if (error && error.message.includes('does not exist')) isTableMissing = true
+      subscriptions = data || []
+    } else if (currentTab === 'deleted') {
+      const { data, error } = await supabase
+        .from('deleted_subscriptions')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('deleted_at', { ascending: false })
+      
+      if (error && error.message.includes('does not exist')) isTableMissing = true
+      subscriptions = data || []
     }
-  } else if (currentTab === 'expired') {
-    const { data } = await supabase
-      .from('expired_subscriptions')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('status', 'expired')
-      .order('expired_at', { ascending: false })
-    subscriptions = data || []
-  } else if (currentTab === 'deleted') {
-    const { data } = await supabase
-      .from('deleted_subscriptions')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('deleted_at', { ascending: false })
-    subscriptions = data || []
+  } catch (err) {
+    console.error('Dashboard fetch error:', err)
+    // If the error happens during the query, it might be caught here too
   }
 
   const tabs = [
@@ -184,7 +196,27 @@ export default async function DashboardPage(props: {
         </div>
 
         {/* Subscriptions Grid */}
-        {subscriptions.length > 0 ? (
+        {isTableMissing ? (
+          <div className="mt-12 rounded-3xl border border-red-500/20 bg-red-500/5 p-8 text-center animate-in fade-in zoom-in-95 duration-300">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-red-500/10 text-red-500">
+              <Ban className="h-8 w-8" />
+            </div>
+            <h2 className="mt-6 text-2xl font-bold text-foreground">Database Setup Required</h2>
+            <p className="mx-auto mt-2 max-w-lg text-secondary">
+              It looks like the required database tables haven't been created yet. Please run the SQL migration script in your Supabase Dashboard to enable subscription tracking.
+            </p>
+            <div className="mt-8 flex justify-center">
+              <a 
+                href="https://supabase.com/dashboard/project/_/sql"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-xl bg-primary px-6 py-3 font-bold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary/90"
+              >
+                Go to Supabase SQL Editor
+              </a>
+            </div>
+          </div>
+        ) : subscriptions.length > 0 ? (
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {subscriptions.map((sub) => (
               <SubscriptionCard key={sub.id} subscription={sub} tab={currentTab} />

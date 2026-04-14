@@ -40,9 +40,28 @@ export function SubscriptionCard({ subscription, tab }: Props) {
     }
   }
 
-  const isExpired = new Date(subscription.expiration_date) < new Date()
-  const formattedDate = format(new Date(subscription.expiration_date), 'MMM d, p')
-  const relativeTime = formatDistanceToNow(new Date(subscription.expiration_date), { addSuffix: true })
+  const getSafeDateInfo = (dateString: string) => {
+    try {
+      const date = new Date(dateString)
+      if (isNaN(date.getTime())) throw new Error('Invalid Date')
+      
+      return {
+        isExpired: date < new Date(),
+        formattedDate: format(date, 'MMM d, p'),
+        relativeTime: formatDistanceToNow(date, { addSuffix: true }),
+        isValid: true
+      }
+    } catch {
+      return {
+        isExpired: false,
+        formattedDate: 'N/A',
+        relativeTime: 'unknown time',
+        isValid: false
+      }
+    }
+  }
+
+  const { isExpired, formattedDate, relativeTime, isValid } = getSafeDateInfo(subscription.expiration_date)
 
   return (
     <div
@@ -69,7 +88,7 @@ export function SubscriptionCard({ subscription, tab }: Props) {
             )}
           </div>
           <div className="flex items-center gap-2 text-sm text-secondary">
-            <span className={cn(isExpired && 'text-red-500 font-medium')}>
+            <span className={cn(isExpired && isValid && 'text-red-500 font-medium')}>
               {isExpired ? 'Expired' : 'Renews'} {relativeTime}
             </span>
             <span className="h-1 w-1 rounded-full bg-border" />

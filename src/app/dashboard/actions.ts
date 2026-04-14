@@ -23,9 +23,19 @@ export async function addSubscription(formData: FormData) {
     status: 'active',
   }
 
+  if (isNaN(subscription.cost)) {
+    throw new Error('Please enter a valid amount for the cost.')
+  }
+
   const { error } = await supabase.from('active_subscriptions').insert(subscription)
 
-  if (error) throw error
+  if (error) {
+    console.error('Add subscription error:', error)
+    if (error.code === '42P01') {
+      throw new Error('Database table "active_subscriptions" not found. Please run the setup SQL.')
+    }
+    throw new Error(error.message)
+  }
 
   revalidatePath('/dashboard')
 }

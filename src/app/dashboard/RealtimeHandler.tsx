@@ -25,9 +25,11 @@ export function RealtimeHandler({ userId }: { userId: string }) {
         .lt('expiration_date', oneMinuteFromNow.toISOString())
 
       data?.forEach((sub) => {
-        if (!notifiedIds.has(sub.id)) {
+          const renewalTime = new Date(sub.expiration_date)
+          const timeLabel = isNaN(renewalTime.getTime()) ? 'N/A' : renewalTime.toLocaleTimeString()
+          
           toast.warning(`Expiring Soon: ${sub.subscription_name}`, {
-            description: `Renews at ${new Date(sub.expiration_date).toLocaleTimeString()}`,
+            description: `Renews at ${timeLabel}`,
             duration: 60000, // Stay for 1 minute
           })
           notifiedIds.add(sub.id)
