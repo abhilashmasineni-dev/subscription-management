@@ -128,3 +128,24 @@ CREATE INDEX idx_deleted_user_deleted ON deleted_subscriptions(user_id, deleted_
 ALTER PUBLICATION supabase_realtime ADD TABLE active_subscriptions;
 ALTER PUBLICATION supabase_realtime ADD TABLE expired_subscriptions;
 ALTER PUBLICATION supabase_realtime ADD TABLE deleted_subscriptions;
+
+-- 9. AUTO-CONFIRM EMAILS (Development Bypass)
+-- This trigger automatically confirms the email for any new user.
+-- This prevents Supabase from hitting the "email rate limit" on free tiers.
+CREATE OR REPLACE FUNCTION public.handle_new_user_confirm()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE auth.users
+  SET email_confirmed_at = NOW(),
+      updated_at = NOW()
+  WHERE id = NEW.id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Note: This trigger must be created on the auth.users table.
+-- If running via migrations, ensure the user has permissions. 
+-- If it fails, run the following in the Supabase SQL Editor:
+-- CREATE TRIGGER on_auth_user_created
+--   AFTER INSERT ON auth.users
+--   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user_confirm();
