@@ -47,7 +47,7 @@ export function SubscriptionCard({ subscription, tab }: Props) {
       
       return {
         isExpired: date < new Date(),
-        formattedDate: format(date, 'MMM d, p'),
+        formattedDate: format(date, 'EEEE, MMM d, yyyy • p'),
         relativeTime: formatDistanceToNow(date, { addSuffix: true }),
         isValid: true
       }

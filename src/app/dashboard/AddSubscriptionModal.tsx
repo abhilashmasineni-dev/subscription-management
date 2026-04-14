@@ -98,6 +98,9 @@ export function AddSubscriptionModal() {
                     defaultValue={new Date().toISOString().split('T')[0]}
                     className="mt-1 block w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:ring-1 focus:ring-primary"
                   />
+                  <p className="mt-1.5 text-[10px] leading-tight text-secondary">
+                    The day you first signed up. We use this to calculate your subscription history.
+                  </p>
                 </div>
 
                 <div>
@@ -111,6 +114,9 @@ export function AddSubscriptionModal() {
                     id="expiration_date"
                     className="mt-1 block w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:ring-1 focus:ring-primary"
                   />
+                  <p className="mt-1.5 text-[10px] leading-tight text-primary font-medium">
+                    Critical: Set this to the exact time your next payment is due. You will get a real-time alert 1 minute before this time.
+                  </p>
                 </div>
 
                 <div>

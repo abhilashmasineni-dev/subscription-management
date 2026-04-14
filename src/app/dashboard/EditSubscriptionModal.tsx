@@ -106,10 +106,13 @@ export function EditSubscriptionModal({ subscription }: Props) {
                     required
                     type="datetime-local"
                     name="expiration_date"
-                    id="expiration_date"
+                    id="edit_expiration_date"
                     defaultValue={new Date(subscription.expiration_date).toISOString().slice(0, 16)}
                     className="mt-1 block w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:ring-1 focus:ring-primary"
                   />
+                  <p className="mt-1.5 text-[10px] leading-tight text-primary font-medium">
+                    Critical: Set this to the exact time your next payment is due. You will get a real-time alert 1 minute before this time.
+                  </p>
                 </div>
 
                 <div>
