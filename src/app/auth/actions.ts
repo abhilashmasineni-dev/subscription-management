@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { createClient } from '@/utils/supabase/server'
+import { createClient, createAdminClient } from '@/utils/supabase/server'
 
 export async function login(formData: FormData) {
   const supabase = await createClient()
@@ -23,17 +23,31 @@ export async function login(formData: FormData) {
 }
 
 export async function signup(formData: FormData) {
-  const supabase = await createClient()
+  const adminClient = await createAdminClient()
+  const email = formData.get('email') as string
+  const password = formData.get('password') as string
 
-  const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
+  // 1. Create the user with auto-confirmation using the Admin API
+  // This bypasses the email sending process and the "rate limit exceeded" error.
+  const { error: createError } = await adminClient.auth.admin.createUser({
+    email,
+    password,
+    email_confirm: true
+  })
+
+  if (createError) {
+    redirect('/login?error=' + encodeURIComponent(createError.message))
   }
 
-  const { error } = await supabase.auth.signUp(data)
+  // 2. Now sign in using the normal client to establish a user session (cookies)
+  const supabase = await createClient()
+  const { error: loginError } = await supabase.auth.signInWithPassword({ 
+    email, 
+    password 
+  })
 
-  if (error) {
-    redirect('/login?error=' + encodeURIComponent(error.message))
+  if (loginError) {
+    redirect('/login?error=' + encodeURIComponent(loginError.message))
   }
 
   revalidatePath('/', 'layout')
