@@ -1,2 +1,12 @@
-{}
-
+{
+  "crons": [
+    {
+      "path": "/api/cron/move-expired",
+      "schedule": "* * * * *"
+    },
+    {
+      "path": "/api/cron/delete-old-records",
+      "schedule": "0 * * * *"
+    }
+  ]
+}

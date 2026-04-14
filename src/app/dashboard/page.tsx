@@ -2,6 +2,7 @@ import { logout } from '../auth/actions'
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { LogOut, LayoutDashboard, Ban, History, Trash2, TrendingUp } from 'lucide-react'
+import { InsightsModal } from './InsightsModal'
 import { AddSubscriptionModal } from './AddSubscriptionModal'
 import { SubscriptionCard } from './SubscriptionCard'
 import { RealtimeHandler } from './RealtimeHandler'
@@ -147,10 +148,7 @@ export default async function DashboardPage(props: {
               Managing subscriptions for <span className="font-medium text-foreground">{user.email}</span>
             </p>
           </div>
-          <button className="flex h-11 items-center gap-2 rounded-xl bg-orange-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-orange-500/20 transition-all hover:bg-orange-600 hover:shadow-orange-500/40">
-            <TrendingUp className="h-4 w-4" />
-            Insights
-          </button>
+          <InsightsModal subscriptions={subscriptions} />
           <AddSubscriptionModal />
         </div>
 
