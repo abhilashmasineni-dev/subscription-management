@@ -203,7 +203,7 @@ export default async function DashboardPage(props: {
             </div>
             <h2 className="mt-6 text-2xl font-bold text-foreground">Database Setup Required</h2>
             <p className="mx-auto mt-2 max-w-lg text-secondary">
-              It looks like the required database tables haven't been created yet. Please run the SQL migration script in your Supabase Dashboard to enable subscription tracking.
+              It looks like the required database tables haven&apos;t been created yet. Please run the SQL migration script in your Supabase Dashboard to enable subscription tracking.
             </p>
             <div className="mt-8 flex justify-center">
               <a 
