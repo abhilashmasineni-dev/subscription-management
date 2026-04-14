@@ -60,8 +60,8 @@ export async function GET(request: Request) {
       moved: expiredSubs.length,
       timestamp: now,
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[CRON] Error moving expired subscriptions:', error)
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ error: (error as any).message }, { status: 500 })
   }
 }

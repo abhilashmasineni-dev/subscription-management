@@ -1,7 +1,7 @@
 'use client'
 
 import { formatDistanceToNow, format } from 'date-fns'
-import { ExternalLink, MoreVertical, Pencil, Trash2, Pause, Play, RotateCcw } from 'lucide-react'
+import { ExternalLink, MoreVertical, Trash2, Pause, Play } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '@/utils/cn'
 import { toggleSubscriptionStatus, softDeleteSubscription } from './actions'

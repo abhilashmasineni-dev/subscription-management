@@ -3,7 +3,6 @@
 import { useState, useTransition } from 'react'
 import { RotateCcw, X, Loader2 } from 'lucide-react'
 import { restoreSubscription } from './actions'
-import { cn } from '@/utils/cn'
 
 interface Subscription {
   id: string
@@ -23,14 +22,14 @@ export function RestoreModal({ subscription, source }: Props) {
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleSubmit = async () => {
     setError(null)
     startTransition(async () => {
       try {
         await restoreSubscription(subscription.id, source)
         setIsOpen(false)
-      } catch (e: any) {
-        setError(e.message || 'Something went wrong')
+      } catch (e: unknown) {
+        setError((e as any).message || 'Something went wrong')
       }
     })
   }
@@ -94,7 +93,7 @@ export function RestoreModal({ subscription, source }: Props) {
                 Cancel
               </button>
               <button
-                onClick={() => handleSubmit(new FormData())}
+                onClick={() => handleSubmit()}
                 disabled={isPending}
                 className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 disabled:opacity-50"
               >

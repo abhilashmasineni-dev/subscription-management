@@ -3,7 +3,6 @@
 import { useState, useTransition } from 'react'
 import { Plus, X, Loader2 } from 'lucide-react'
 import { addSubscription } from './actions'
-import { cn } from '@/utils/cn'
 
 export function AddSubscriptionModal() {
   const [isOpen, setIsOpen] = useState(false)
@@ -16,8 +15,8 @@ export function AddSubscriptionModal() {
       try {
         await addSubscription(formData)
         setIsOpen(false)
-      } catch (e: any) {
-        setError(e.message || 'Something went wrong')
+      } catch (e: unknown) {
+        setError((e as any).message || 'Something went wrong')
       }
     })
   }

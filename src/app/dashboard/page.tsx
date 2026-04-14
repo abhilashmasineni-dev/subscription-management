@@ -7,27 +7,38 @@ import { SubscriptionCard } from './SubscriptionCard'
 import { RealtimeHandler } from './RealtimeHandler'
 import { cn } from '@/utils/cn'
 
+interface Subscription {
+  id: string
+  subscription_name: string
+  website_link?: string
+  expiration_date: string
+  cost: number
+  currency: string
+  status: 'active' | 'disabled' | 'expired' | 'restored'
+  deleted_at?: string
+  expired_at?: string
+}
+
 export default async function DashboardPage(props: {
   searchParams: Promise<{ tab?: string; sortBy?: string; order?: string }>
 }) {
   const searchParams = await props.searchParams
   const supabase = await createClient()
-
   const {
-    data: { user },
+    data: userData,
   } = await supabase.auth.getUser()
 
-  if (!user) {
+  if (!userData.user) {
     redirect('/login')
   }
 
-  const userId = user.id
+  const user = userData.user
   const currentTab = (searchParams.tab || 'active') as 'active' | 'disabled' | 'expired' | 'deleted'
   const sortBy = searchParams.sortBy || (currentTab === 'active' || currentTab === 'disabled' ? 'expiration_date' : 'created_at')
   const sortOrder = searchParams.order === 'desc' ? false : true
 
   // Fetch subscriptions based on tab
-  let subscriptions: any[] = []
+  let subscriptions: Subscription[] = []
   let totalSpending = 0
 
   if (currentTab === 'active' || currentTab === 'disabled') {

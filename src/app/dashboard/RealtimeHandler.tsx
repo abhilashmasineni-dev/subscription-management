@@ -102,6 +102,7 @@ export function RealtimeHandler({ userId }: { userId: string }) {
       .subscribe()
 
     return () => {
+      clearInterval(interval)
       supabase.removeChannel(activeSub)
       supabase.removeChannel(expiredSub)
       supabase.removeChannel(deletedSub)

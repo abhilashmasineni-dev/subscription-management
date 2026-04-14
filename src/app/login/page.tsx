@@ -1,5 +1,4 @@
 import { login, signup } from '../auth/actions'
-import { cn } from '@/utils/cn'
 import { LogIn, UserPlus } from 'lucide-react'
 
 export default async function LoginPage(props: {

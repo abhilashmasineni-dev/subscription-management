@@ -3,7 +3,6 @@
 import { useState, useTransition } from 'react'
 import { Pencil, X, Loader2 } from 'lucide-react'
 import { updateSubscription } from './actions'
-import { cn } from '@/utils/cn'
 
 interface Subscription {
   id: string
@@ -29,8 +28,8 @@ export function EditSubscriptionModal({ subscription }: Props) {
       try {
         await updateSubscription(subscription.id, formData)
         setIsOpen(false)
-      } catch (e: any) {
-        setError(e.message || 'Something went wrong')
+      } catch (e: unknown) {
+        setError((e as any).message || 'Something went wrong')
       }
     })
   }
