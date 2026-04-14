@@ -79,79 +79,94 @@ export async function toggleSubscriptionStatus(id: string, currentStatus: string
 export async function softDeleteSubscription(id: string) {
   const supabase = await createClient()
 
-  // 1. Get original subscription
-  const { data: sub, error: fetchError } = await supabase
-    .from('active_subscriptions')
-    .select('*')
-    .eq('id', id)
-    .single()
+  try {
+    // 1. Get original subscription
+    const { data: sub, error: fetchError } = await supabase
+      .from('active_subscriptions')
+      .select('*')
+      .eq('id', id)
+      .single()
 
-  if (fetchError) throw fetchError
+    if (fetchError) throw new Error(`Could not find the subscription: ${fetchError.message}`)
 
-  // 2. Move to deleted_subscriptions
-  const { error: insertError } = await supabase.from('deleted_subscriptions').insert({
-    user_id: sub.user_id,
-    original_subscription_id: sub.id,
-    subscription_name: sub.subscription_name,
-    website_link: sub.website_link,
-    start_date: sub.start_date,
-    expiration_date: sub.expiration_date,
-    cost: sub.cost,
-    currency: sub.currency,
-    deleted_at: new Date().toISOString(),
-    can_restore_until: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-  })
+    // 2. Move to deleted_subscriptions
+    const { error: insertError } = await supabase.from('deleted_subscriptions').insert({
+      user_id: sub.user_id,
+      original_subscription_id: sub.id,
+      subscription_name: sub.subscription_name,
+      website_link: sub.website_link,
+      start_date: sub.start_date,
+      expiration_date: sub.expiration_date,
+      cost: sub.cost,
+      currency: sub.currency,
+      deleted_at: new Date().toISOString(),
+      can_restore_until: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+    })
 
-  if (insertError) throw insertError
+    if (insertError) throw new Error(`Could not move to trash: ${insertError.message}`)
 
-  // 3. Delete from active_subscriptions
-  const { error: deleteError } = await supabase
-    .from('active_subscriptions')
-    .delete()
-    .eq('id', id)
+    // 3. Delete from active_subscriptions
+    const { error: deleteError } = await supabase
+      .from('active_subscriptions')
+      .delete()
+      .eq('id', id)
 
-  if (deleteError) throw deleteError
+    if (deleteError) throw new Error(`Could not remove from active list: ${deleteError.message}`)
 
-  revalidatePath('/dashboard')
+    revalidatePath('/dashboard')
+  } catch (err) {
+    console.error('Delete error:', err)
+    throw err instanceof Error ? err : new Error('An unexpected error occurred during deletion.')
+  }
 }
 
 export async function restoreSubscription(originalId: string, source: 'expired' | 'deleted') {
   const supabase = await createClient()
   const table = source === 'expired' ? 'expired_subscriptions' : 'deleted_subscriptions'
 
-  // 1. Get record
-  const { data: record, error: fetchError } = await supabase
-    .from(table)
-    .select('*')
-    .eq('original_subscription_id', originalId)
-    .single()
+  try {
+    // 1. Get record
+    const { data: record, error: fetchError } = await supabase
+      .from(table)
+      .select('*')
+      .eq('id', originalId) // Use the record's own ID
+      .single()
 
-  if (fetchError) throw fetchError
+    if (fetchError) throw new Error(`Could not find the ${source} record: ${fetchError.message}`)
 
-  // 2. Restore to active_subscriptions
-  const { error: insertError } = await supabase.from('active_subscriptions').insert({
-    user_id: record.user_id,
-    subscription_name: record.subscription_name,
-    website_link: record.website_link,
-    start_date: record.start_date,
-    expiration_date: record.expiration_date,
-    cost: record.cost,
-    currency: record.currency,
-    status: 'active',
-  })
+    // 2. Restore to active_subscriptions
+    const { error: insertError } = await supabase.from('active_subscriptions').insert({
+      user_id: record.user_id,
+      subscription_name: record.subscription_name,
+      website_link: record.website_link,
+      start_date: record.start_date,
+      expiration_date: record.expiration_date,
+      cost: record.cost,
+      currency: record.currency,
+      status: 'active',
+    })
 
-  if (insertError) throw insertError
+    if (insertError) {
+      if (insertError.code === '23505') {
+        throw new Error(`An active subscription with the name "${record.subscription_name}" already exists. Please rename or delete it before restoring.`)
+      }
+      throw new Error(insertError.message)
+    }
 
-  // 3. Update record status if expired
-  if (source === 'expired') {
-    await supabase
-      .from('expired_subscriptions')
-      .update({ status: 'restored', restored_at: new Date().toISOString() })
-      .eq('id', record.id)
-  } else {
-    // Or delete if soft-deleted
-    await supabase.from('deleted_subscriptions').delete().eq('id', record.id)
+    // 3. Update record status if expired
+    if (source === 'expired') {
+      await supabase
+        .from('expired_subscriptions')
+        .update({ status: 'restored', restored_at: new Date().toISOString() })
+        .eq('id', record.id)
+    } else {
+      // Or delete if soft-deleted
+      await supabase.from('deleted_subscriptions').delete().eq('id', record.id)
+    }
+
+    revalidatePath('/dashboard')
+  } catch (err) {
+    console.error('Restore error:', err)
+    throw err instanceof Error ? err : new Error('An unexpected error occurred during restoration.')
   }
-
-  revalidatePath('/dashboard')
 }
