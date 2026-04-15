@@ -161,13 +161,6 @@ export default async function DashboardPage(props: {
           <AddSubscriptionModal />
         </div>
 
-        {/* Insights Section */}
-        {!isTableMissing && activeSubscriptions.length > 0 && (
-          <div className="mt-8">
-            <DashboardInsights subscriptions={activeSubscriptions} />
-          </div>
-        )}
-
 
         <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-1 overflow-x-auto rounded-2xl border border-border bg-card p-1 scrollbar-hide">
@@ -188,26 +181,7 @@ export default async function DashboardPage(props: {
             ))}
           </div>
 
-          <div className="flex items-center gap-2 rounded-2xl border border-border bg-card p-1">
-            {[
-              { id: 'subscription_name', label: 'Name' },
-              { id: 'cost', label: 'Cost' },
-              { id: 'expiration_date', label: 'Expiry' },
-            ].map((option) => (
-              <a
-                key={option.id}
-                href={`/dashboard?tab=${currentTab}&sortBy=${option.id}&order=${sortBy === option.id && !searchParams.order ? 'desc' : 'asc'}`}
-                className={cn(
-                  'rounded-xl px-3 py-1.5 text-xs font-bold transition-all',
-                  sortBy === option.id
-                    ? 'bg-secondary text-white'
-                    : 'text-secondary hover:bg-secondary/10 hover:text-foreground'
-                )}
-              >
-                {option.label}
-              </a>
-            ))}
-          </div>
+          <DashboardInsights subscriptions={activeSubscriptions} />
         </div>
 
         {/* Subscriptions Grid */}
