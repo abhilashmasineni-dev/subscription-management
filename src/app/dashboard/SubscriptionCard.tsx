@@ -162,7 +162,6 @@ export function SubscriptionCard({ subscription, tab }: Props) {
           )}
         </div>
       </div>
-    </div>
 
       {/* Bottom Section: Cost and Renewal Info */}
       <div className="mt-10 flex items-end justify-between">
