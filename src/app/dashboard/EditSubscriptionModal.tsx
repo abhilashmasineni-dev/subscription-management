@@ -50,7 +50,7 @@ export function EditSubscriptionModal({ subscription }: Props) {
             onClick={() => !isPending && setIsOpen(false)}
           />
           
-          <div className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-2xl animate-in zoom-in-95 duration-200">
+          <div className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-2xl animate-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between border-b border-border pb-4">
               <h2 className="text-xl font-bold text-foreground">Edit Subscription</h2>
               <button
@@ -99,7 +99,7 @@ export function EditSubscriptionModal({ subscription }: Props) {
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label htmlFor="expiration_date" className="text-xs font-semibold uppercase tracking-wider text-secondary">
+                  <label htmlFor="edit_expiration_date" className="text-xs font-semibold uppercase tracking-wider text-secondary">
                     Next Expiration / Renewal
                   </label>
                   <input
