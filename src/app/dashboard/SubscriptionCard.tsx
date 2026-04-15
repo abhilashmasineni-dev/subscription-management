@@ -1,7 +1,7 @@
 'use client'
 
 import { formatDistanceToNow, format } from 'date-fns'
-import { ExternalLink, MoreVertical, Trash2, Pause, Play } from 'lucide-react'
+import { ExternalLink, MoreVertical, Trash2, Pause, Play, Share2 } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '@/utils/cn'
 import { toggleSubscriptionStatus, softDeleteSubscription } from './actions'
@@ -80,61 +80,48 @@ export function SubscriptionCard({ subscription, tab }: Props) {
   return (
     <div
       className={cn(
-        'group relative overflow-hidden rounded-2xl border border-border bg-card p-5 transition-all hover:border-primary/50 hover:shadow-lg',
+        'group relative overflow-hidden rounded-[2rem] border border-border/50 bg-[#0a0a0a] pt-6 px-6 pb-5 transition-all hover:border-primary/50 hover:shadow-2xl',
         subscription.status === 'disabled' && 'opacity-60 grayscale-[0.5]'
       )}
     >
-      <div className="flex items-start justify-between">
-        <div className="flex-1 min-w-0 pr-4 space-y-1">
-          <div className="flex items-center gap-2">
-            <h3 className="text-lg font-bold text-foreground truncate">
-              {subscription.subscription_name}
-            </h3>
-            {subscription.website_link && (
-              <a
-                href={subscription.website_link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-secondary shrink-0 transition-colors hover:text-primary"
-              >
-                <ExternalLink className="h-4 w-4" />
-              </a>
-            )}
-          </div>
-          <div className="flex flex-col text-sm text-secondary">
-            <span className={cn(isExpired && isValid && 'text-red-500 font-medium')}>
-              {isExpired ? 'Expired' : 'Renews'} {relativeTime}
-            </span>
-            <span className="text-xs opacity-70">on {formattedDate}</span>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3 shrink-0">
+      {/* Top Section: Logo, Name, Share, Menu */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
           {domain && !logoError ? (
-            <div className="relative group/logo">
-              <div className="absolute -inset-1 bg-gradient-to-r from-primary to-purple-600 rounded-xl opacity-20 blur-sm transition-opacity group-hover/logo:opacity-40" />
+            <div className="relative shrink-0">
               <img
                 src={logoUrl!}
                 onError={() => setLogoError(true)}
-                className="relative h-10 w-10 rounded-xl border border-border/50 bg-white/5 object-contain p-1.5 shadow-sm transition-transform hover:scale-110"
+                className="h-12 w-12 rounded-2xl bg-white/5 object-contain p-2 shadow-inner"
                 alt=""
               />
             </div>
           ) : (
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 shadow-sm">
-              <span className="text-lg font-bold text-primary">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <span className="text-xl font-bold">
                 {subscription.subscription_name[0].toUpperCase()}
               </span>
             </div>
           )}
+          
+          <div className="flex items-center gap-2">
+            <h3 className="text-2xl font-bold tracking-tight text-white font-serif">
+              {subscription.subscription_name.toLowerCase()}
+            </h3>
+            <div className="rounded-full bg-white/10 p-1.5 text-white transition-colors hover:bg-white/20">
+              <Share2 className="h-4 w-4" />
+            </div>
+          </div>
+        </div>
 
-          <div className="relative">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="rounded-lg p-1.5 text-secondary transition-colors hover:bg-secondary/10 hover:text-foreground"
-            >
-              <MoreVertical className="h-5 w-5" />
-            </button>
+        <div className="relative">
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="rounded-full p-2 text-secondary transition-colors hover:bg-white/10 hover:text-white"
+          >
+            <MoreVertical className="h-6 w-6" />
+          </button>
+
 
           {isMenuOpen && (
             <>
@@ -177,24 +164,31 @@ export function SubscriptionCard({ subscription, tab }: Props) {
       </div>
     </div>
 
-    <div className="mt-6 flex items-end justify-between">
-        <div>
-          <p className="text-xs font-medium uppercase tracking-wider text-secondary">
-            Cost
+      {/* Bottom Section: Cost and Renewal Info */}
+      <div className="mt-10 flex items-end justify-between">
+        <div className="space-y-1">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/50">
+            COST
           </p>
-          <p className="text-2xl font-bold text-foreground">
-            {subscription.currency === 'USD' ? '$' : subscription.currency}
-            {subscription.cost}
-            <span className="text-sm font-normal text-secondary">/mo</span>
+          <div className="flex items-baseline gap-1">
+            <span className="text-3xl font-bold text-white">
+              {subscription.currency === 'USD' ? '$' : subscription.currency}
+              {subscription.cost}
+            </span>
+            <span className="text-lg font-medium text-white/50">/mo</span>
+          </div>
+        </div>
+
+        <div className="text-right space-y-0.5">
+          <p className={cn("text-base font-bold text-white", isExpired && isValid && 'text-red-500')}>
+            {isExpired ? 'Expired' : 'Renews'} {relativeTime}
+          </p>
+          <p className="text-sm font-bold text-white/70">
+            on {formattedDate.toLowerCase()}
           </p>
         </div>
-        
-        {subscription.status === 'disabled' && (
-          <span className="rounded-full bg-secondary/10 px-2.5 py-0.5 text-xs font-semibold text-secondary">
-            Paused
-          </span>
-        )}
       </div>
+
     </div>
   )
 }
