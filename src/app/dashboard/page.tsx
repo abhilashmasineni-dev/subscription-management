@@ -2,7 +2,7 @@ import { logout } from '../auth/actions'
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { LogOut, LayoutDashboard, Ban, History, Trash2, TrendingUp } from 'lucide-react'
-import { InsightsModal } from './InsightsModal'
+import { DashboardInsights } from './DashboardInsights'
 import { AddSubscriptionModal } from './AddSubscriptionModal'
 import { SubscriptionCard } from './SubscriptionCard'
 import { RealtimeHandler } from './RealtimeHandler'
@@ -40,6 +40,7 @@ export default async function DashboardPage(props: {
 
   // Fetch subscriptions based on tab
   let subscriptions: Subscription[] = []
+  let activeSubscriptions: Subscription[] = []
   let totalSpending = 0
   let isTableMissing = false
 
@@ -88,9 +89,18 @@ export default async function DashboardPage(props: {
       if (error && error.message.includes('does not exist')) isTableMissing = true
       subscriptions = data || []
     }
+
+    // Always fetch active subscriptions for Insights summary
+    const { data: insightsData } = await supabase
+      .from('active_subscriptions')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('status', 'active')
+    
+    activeSubscriptions = insightsData || []
+    totalSpending = activeSubscriptions.reduce((sum, sub) => sum + Number(sub.cost), 0)
   } catch (err) {
     console.error('Dashboard fetch error:', err)
-    // If the error happens during the query, it might be caught here too
   }
 
   const tabs = [
@@ -148,9 +158,16 @@ export default async function DashboardPage(props: {
               Managing subscriptions for <span className="font-medium text-foreground">{user.email}</span>
             </p>
           </div>
-          <InsightsModal subscriptions={subscriptions} />
           <AddSubscriptionModal />
         </div>
+
+        {/* Insights Section */}
+        {!isTableMissing && activeSubscriptions.length > 0 && (
+          <div className="mt-8">
+            <DashboardInsights subscriptions={activeSubscriptions} />
+          </div>
+        )}
+
 
         <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-1 overflow-x-auto rounded-2xl border border-border bg-card p-1 scrollbar-hide">
