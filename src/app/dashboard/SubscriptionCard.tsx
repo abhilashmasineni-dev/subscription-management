@@ -175,8 +175,9 @@ export function SubscriptionCard({ subscription, tab }: Props) {
           )}
         </div>
       </div>
+    </div>
 
-      <div className="mt-6 flex items-end justify-between">
+    <div className="mt-6 flex items-end justify-between">
         <div>
           <p className="text-xs font-medium uppercase tracking-wider text-secondary">
             Cost
