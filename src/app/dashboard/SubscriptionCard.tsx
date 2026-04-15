@@ -80,7 +80,7 @@ export function SubscriptionCard({ subscription, tab }: Props) {
   return (
     <div
       className={cn(
-        'group relative overflow-hidden rounded-[2rem] border border-border/50 bg-[#0a0a0a] pt-6 px-6 pb-5 transition-all hover:border-primary/50 hover:shadow-2xl',
+        'group relative rounded-[2rem] border border-border/50 bg-[#0a0a0a] pt-6 px-6 pb-5 transition-all hover:border-primary/50 hover:shadow-2xl',
         subscription.status === 'disabled' && 'opacity-60 grayscale-[0.5]'
       )}
     >
