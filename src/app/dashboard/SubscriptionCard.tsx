@@ -1,7 +1,7 @@
 'use client'
 
 import { formatDistanceToNow, format } from 'date-fns'
-import { ExternalLink, MoreVertical, Trash2, Pause, Play, Share2 } from 'lucide-react'
+import { ExternalLink, MoreVertical, Trash2, Pause, Play } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '@/utils/cn'
 import { toggleSubscriptionStatus, softDeleteSubscription } from './actions'
@@ -106,10 +106,10 @@ export function SubscriptionCard({ subscription, tab }: Props) {
           
           <div className="flex items-center gap-2">
             <h3 className="text-2xl font-bold tracking-tight text-white font-serif">
-              {subscription.subscription_name.toLowerCase()}
+              {subscription.subscription_name?.toLowerCase() || 'unnamed'}
             </h3>
             <div className="rounded-full bg-white/10 p-1.5 text-white transition-colors hover:bg-white/20">
-              <Share2 className="h-4 w-4" />
+              <ExternalLink className="h-4 w-4" />
             </div>
           </div>
         </div>
@@ -183,7 +183,7 @@ export function SubscriptionCard({ subscription, tab }: Props) {
             {isExpired ? 'Expired' : 'Renews'} {relativeTime}
           </p>
           <p className="text-sm font-bold text-white/70">
-            on {formattedDate.toLowerCase()}
+            on {(formattedDate || 'N/A').toLowerCase()}
           </p>
         </div>
       </div>
