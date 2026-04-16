@@ -85,8 +85,8 @@ export function SubscriptionCard({ subscription, tab }: Props) {
       )}
     >
       {/* Top Section: Logo, Name, Share, Menu */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-3">
           {domain && !logoError ? (
             <div className="relative shrink-0">
               <img
@@ -104,8 +104,8 @@ export function SubscriptionCard({ subscription, tab }: Props) {
             </div>
           )}
           
-          <div className="flex items-center gap-2">
-            <h3 className="text-2xl font-bold tracking-tight text-white font-serif">
+          <div className="flex min-w-0 items-center gap-2">
+            <h3 className="min-w-0 truncate text-2xl font-bold tracking-tight text-white font-serif">
               {subscription.subscription_name?.toLowerCase() || 'unnamed'}
             </h3>
             <div className="rounded-full bg-white/10 p-1.5 text-white transition-colors hover:bg-white/20">
@@ -178,11 +178,11 @@ export function SubscriptionCard({ subscription, tab }: Props) {
           </div>
         </div>
 
-        <div className="text-right space-y-0.5">
-          <p className={cn("text-base font-bold text-white", isExpired && isValid && 'text-red-500')}>
+        <div className="min-w-0 text-right space-y-0.5">
+          <p className={cn("truncate text-base font-bold text-white", isExpired && isValid && 'text-red-500')}>
             {isExpired ? 'Expired' : 'Renews'} {relativeTime}
           </p>
-          <p className="text-sm font-bold text-white/70">
+          <p className="truncate text-sm font-bold text-white/70">
             on {(formattedDate || 'N/A').toLowerCase()}
           </p>
         </div>
