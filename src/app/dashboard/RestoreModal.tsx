@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import { createPortal } from 'react-dom'
 import { RotateCcw, X, Loader2 } from 'lucide-react'
 import { restoreSubscription } from './actions'
 
@@ -43,73 +44,76 @@ export function RestoreModal({ subscription, source }: Props) {
         <RotateCcw className="h-4 w-4" /> Restore
       </button>
 
-      {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-background/60 backdrop-blur-sm"
-            onClick={() => !isPending && setIsOpen(false)}
-          />
-          
-          <div className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-2xl animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between border-b border-border pb-4">
-              <h2 className="text-xl font-bold text-foreground">Restore Subscription</h2>
-              <button
-                onClick={() => setIsOpen(false)}
-                disabled={isPending}
-                className="rounded-full p-1 text-secondary hover:bg-secondary/10 hover:text-foreground"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
+      {isOpen &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <div
+              className="absolute inset-0 bg-background/60 backdrop-blur-sm"
+              onClick={() => !isPending && setIsOpen(false)}
+            />
 
-            {error && (
-              <div className="mt-4 rounded-lg bg-red-500/10 p-3 text-sm text-red-500">
-                {error}
+            <div className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-2xl animate-in zoom-in-95 duration-200">
+              <div className="flex items-center justify-between border-b border-border pb-4">
+                <h2 className="text-xl font-bold text-foreground">Restore Subscription</h2>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  disabled={isPending}
+                  className="rounded-full p-1 text-secondary hover:bg-secondary/10 hover:text-foreground"
+                >
+                  <X className="h-5 w-5" />
+                </button>
               </div>
-            )}
 
-            <div className="mt-6 space-y-4">
-              <p className="text-sm text-secondary">
-                Are you sure you want to restore <span className="font-bold text-foreground">{subscription.subscription_name}</span>?
-              </p>
-              
-              {source === 'expired' && (
-                <div className="rounded-lg bg-primary/5 p-4 border border-primary/10">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-primary mb-2">Note for Expired Items</p>
-                  <p className="text-sm text-secondary">
-                    Restoring an expired item will move it back to Active. You should update the expiration date via Edit after restoring.
-                  </p>
+              {error && (
+                <div className="mt-4 rounded-lg bg-red-500/10 p-3 text-sm text-red-500">
+                  {error}
                 </div>
               )}
-            </div>
 
-            <div className="mt-8 flex justify-end gap-3 pt-4 border-t border-border">
-              <button
-                type="button"
-                onClick={() => setIsOpen(false)}
-                disabled={isPending}
-                className="rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground hover:bg-secondary/10"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => handleSubmit()}
-                disabled={isPending}
-                className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 disabled:opacity-50"
-              >
-                {isPending ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Restoring...
-                  </>
-                ) : (
-                  'Confirm Restoration'
+              <div className="mt-6 space-y-4">
+                <p className="text-sm text-secondary">
+                  Are you sure you want to restore <span className="font-bold text-foreground">{subscription.subscription_name}</span>?
+                </p>
+
+                {source === 'expired' && (
+                  <div className="rounded-lg border border-primary/10 bg-primary/5 p-4">
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-primary">Note for Expired Items</p>
+                    <p className="text-sm text-secondary">
+                      Restoring an expired item will move it back to Active. You should update the expiration date via Edit after restoring.
+                    </p>
+                  </div>
                 )}
-              </button>
+              </div>
+
+              <div className="mt-8 flex justify-end gap-3 border-t border-border pt-4">
+                <button
+                  type="button"
+                  onClick={() => setIsOpen(false)}
+                  disabled={isPending}
+                  className="rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground hover:bg-secondary/10"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleSubmit()}
+                  disabled={isPending}
+                  className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 disabled:opacity-50"
+                >
+                  {isPending ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Restoring...
+                    </>
+                  ) : (
+                    'Confirm Restoration'
+                  )}
+                </button>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body
+        )}
     </>
   )
 }
