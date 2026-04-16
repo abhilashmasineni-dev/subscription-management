@@ -3,6 +3,73 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/utils/supabase/server'
 
+type WebsiteValidationResult = {
+  isValid: boolean
+  normalizedUrl?: string
+  message?: string
+}
+
+const normalizeWebsiteUrl = (rawUrl: string) => {
+  const trimmed = rawUrl.trim()
+  if (!trimmed) return ''
+  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`
+}
+
+export async function validateWebsiteLink(rawUrl: string): Promise<WebsiteValidationResult> {
+  const normalizedUrl = normalizeWebsiteUrl(rawUrl)
+
+  if (!normalizedUrl) {
+    return { isValid: true }
+  }
+
+  let parsedUrl: URL
+  try {
+    parsedUrl = new URL(normalizedUrl)
+  } catch {
+    return { isValid: false, message: 'Please enter a valid website URL.' }
+  }
+
+  if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+    return { isValid: false, message: 'Only HTTP and HTTPS website links are allowed.' }
+  }
+
+  try {
+    const headResponse = await fetch(parsedUrl.toString(), {
+      method: 'HEAD',
+      signal: AbortSignal.timeout(5000),
+      redirect: 'follow',
+    })
+
+    if (headResponse.ok) {
+      return { isValid: true, normalizedUrl: parsedUrl.toString() }
+    }
+  } catch {
+    // Fallback to GET when HEAD is blocked by origin.
+  }
+
+  try {
+    const getResponse = await fetch(parsedUrl.toString(), {
+      method: 'GET',
+      signal: AbortSignal.timeout(5000),
+      redirect: 'follow',
+    })
+
+    if (getResponse.ok) {
+      return { isValid: true, normalizedUrl: parsedUrl.toString() }
+    }
+
+    return {
+      isValid: false,
+      message: `Website is not reachable (HTTP ${getResponse.status}).`,
+    }
+  } catch {
+    return {
+      isValid: false,
+      message: 'Website could not be reached. Please check the link.',
+    }
+  }
+}
+
 export async function addSubscription(formData: FormData) {
   const supabase = await createClient()
 
@@ -25,6 +92,14 @@ export async function addSubscription(formData: FormData) {
 
   if (isNaN(subscription.cost)) {
     throw new Error('Please enter a valid amount for the cost.')
+  }
+
+  const websiteValidation = await validateWebsiteLink(subscription.website_link || '')
+  if (!websiteValidation.isValid) {
+    throw new Error(websiteValidation.message || 'Please provide a valid website link.')
+  }
+  if (websiteValidation.normalizedUrl) {
+    subscription.website_link = websiteValidation.normalizedUrl
   }
 
   const { error } = await supabase.from('active_subscriptions').insert(subscription)
@@ -65,6 +140,14 @@ export async function updateSubscription(id: string, formData: FormData) {
   const startDate = formData.get('start_date') as string
   if (startDate) {
     updates.start_date = startDate
+  }
+
+  const websiteValidation = await validateWebsiteLink(updates.website_link || '')
+  if (!websiteValidation.isValid) {
+    throw new Error(websiteValidation.message || 'Please provide a valid website link.')
+  }
+  if (websiteValidation.normalizedUrl) {
+    updates.website_link = websiteValidation.normalizedUrl
   }
 
   const { error } = await supabase

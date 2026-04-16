@@ -2,15 +2,57 @@
 
 import { useState, useTransition } from 'react'
 import { Plus, X, Loader2 } from 'lucide-react'
-import { addSubscription } from './actions'
+import { addSubscription, validateWebsiteLink } from './actions'
 
 export function AddSubscriptionModal() {
   const [isOpen, setIsOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
+  const [websiteLink, setWebsiteLink] = useState('')
+  const [websiteStatus, setWebsiteStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid'>('idle')
+  const [websiteError, setWebsiteError] = useState<string | null>(null)
+
+  const validateWebsite = async (rawValue: string) => {
+    const value = rawValue.trim()
+
+    if (!value) {
+      setWebsiteStatus('idle')
+      setWebsiteError(null)
+      return true
+    }
+
+    setWebsiteStatus('checking')
+    setWebsiteError(null)
+
+    const result = await validateWebsiteLink(value)
+
+    if (result.isValid) {
+      setWebsiteStatus('valid')
+      if (result.normalizedUrl) {
+        setWebsiteLink(result.normalizedUrl)
+      }
+      return true
+    }
+
+    setWebsiteStatus('invalid')
+    setWebsiteError(result.message || 'Website could not be validated.')
+    return false
+  }
 
   const handleSubmit = async (formData: FormData) => {
     setError(null)
+
+    const websiteValue = (formData.get('website_link') as string) || websiteLink
+    const websiteIsValid = await validateWebsite(websiteValue)
+    if (!websiteIsValid) {
+      setError('Please fix the website link before saving.')
+      return
+    }
+
+    if (websiteLink.trim()) {
+      formData.set('website_link', websiteLink.trim())
+    }
+
     startTransition(async () => {
       try {
         await addSubscription(formData)
@@ -81,9 +123,30 @@ export function AddSubscriptionModal() {
                   <input
                     name="website_link"
                     id="website_link"
+                    value={websiteLink}
+                    onChange={(e) => {
+                      setWebsiteLink(e.target.value)
+                      if (websiteStatus !== 'idle') {
+                        setWebsiteStatus('idle')
+                        setWebsiteError(null)
+                      }
+                    }}
+                    onBlur={() => {
+                      void validateWebsite(websiteLink)
+                    }}
                     placeholder="https://..."
-                    className="mt-1 block w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:ring-1 focus:ring-primary"
+                    className={`mt-1 block w-full rounded-lg border bg-background px-3 py-2 text-foreground focus:ring-1 ${
+                      websiteStatus === 'invalid'
+                        ? 'border-red-500 text-red-500 focus:border-red-500 focus:ring-red-500'
+                        : 'border-border focus:border-primary focus:ring-primary'
+                    }`}
                   />
+                  {websiteStatus === 'checking' && (
+                    <p className="mt-1.5 text-[10px] leading-tight text-secondary">Checking website...</p>
+                  )}
+                  {websiteError && (
+                    <p className="mt-1.5 text-[10px] leading-tight text-red-500">{websiteError}</p>
+                  )}
                 </div>
 
                 <div>
@@ -166,7 +229,7 @@ export function AddSubscriptionModal() {
                 </button>
                 <button
                   type="submit"
-                  disabled={isPending}
+                  disabled={isPending || websiteStatus === 'checking' || websiteStatus === 'invalid'}
                   className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 disabled:opacity-50"
                 >
                   {isPending ? (
