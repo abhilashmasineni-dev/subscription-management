@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { TrendingUp, Coins, BarChart3, Zap, ArrowUpRight, ArrowDownRight, LayoutDashboard, Lightbulb, X } from 'lucide-react'
-import { cn } from '@/utils/cn'
 
 interface Subscription {
   id: string
@@ -33,23 +32,17 @@ export function DashboardInsights({ subscriptions }: Props) {
     {
       label: 'Monthly Spend',
       value: `$${totalMonthly.toFixed(2)}`,
-      icon: <Coins className="h-4 w-4" />,
-      color: 'text-blue-500',
-      bg: 'bg-blue-500/10'
+      icon: <Coins className="h-4 w-4" />
     },
     {
       label: 'Yearly Projection',
       value: `$${totalYearly.toFixed(2)}`,
-      icon: <TrendingUp className="h-4 w-4" />,
-      color: 'text-orange-500',
-      bg: 'bg-orange-500/10'
+      icon: <TrendingUp className="h-4 w-4" />
     },
     {
       label: 'Average cost',
       value: `$${averageCost.toFixed(2)}`,
-      icon: <BarChart3 className="h-4 w-4" />,
-      color: 'text-purple-500',
-      bg: 'bg-purple-500/10'
+      icon: <BarChart3 className="h-4 w-4" />
     }
   ]
 
@@ -74,7 +67,7 @@ export function DashboardInsights({ subscriptions }: Props) {
             <div className="border-b border-border/80 px-6 py-5">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white shadow-lg shadow-primary/20">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-secondary/15 text-foreground">
                     <TrendingUp className="h-5 w-5" />
                   </div>
                   <div>
@@ -100,7 +93,7 @@ export function DashboardInsights({ subscriptions }: Props) {
                 {stats.map((stat, i) => (
                   <div key={i} className="rounded-2xl border border-border/70 bg-secondary/5 p-4 transition-colors hover:bg-secondary/10">
                     <div className="flex items-center gap-2">
-                      <div className={cn('rounded-lg p-1.5', stat.bg, stat.color)}>
+                      <div className="rounded-lg bg-secondary/15 p-1.5 text-foreground">
                         {stat.icon}
                       </div>
                       <p className="text-[11px] font-semibold uppercase tracking-widest text-secondary">{stat.label}</p>
@@ -111,32 +104,32 @@ export function DashboardInsights({ subscriptions }: Props) {
               </div>
 
               <div className="grid gap-3 sm:grid-cols-2">
-                <div className="relative overflow-hidden rounded-2xl border border-orange-500/20 bg-orange-500/5 p-4">
-                  <ArrowUpRight className="absolute -right-3 -top-3 h-14 w-14 text-orange-500/10" />
-                  <div className="flex items-center gap-2 text-orange-500">
+                <div className="relative overflow-hidden rounded-2xl border border-border/70 bg-secondary/5 p-4">
+                  <ArrowUpRight className="absolute -right-3 -top-3 h-14 w-14 text-white/5" />
+                  <div className="flex items-center gap-2 text-secondary">
                     <Zap className="h-4 w-4" />
                     <span className="text-[10px] font-bold uppercase tracking-widest">Highest Cost</span>
                   </div>
                   {mostExpensive ? (
                     <>
                       <p className="mt-2 truncate text-base font-bold text-foreground">{mostExpensive.subscription_name}</p>
-                      <p className="text-sm font-semibold text-orange-500">${Number(mostExpensive.cost).toFixed(2)}/mo</p>
+                      <p className="text-sm font-semibold text-foreground">${Number(mostExpensive.cost).toFixed(2)}/mo</p>
                     </>
                   ) : (
                     <p className="mt-2 text-sm text-secondary">No active subscriptions yet.</p>
                   )}
                 </div>
 
-                <div className="relative overflow-hidden rounded-2xl border border-green-500/20 bg-green-500/5 p-4">
-                  <ArrowDownRight className="absolute -right-3 -top-3 h-14 w-14 text-green-500/10" />
-                  <div className="flex items-center gap-2 text-green-500">
+                <div className="relative overflow-hidden rounded-2xl border border-border/70 bg-secondary/5 p-4">
+                  <ArrowDownRight className="absolute -right-3 -top-3 h-14 w-14 text-white/5" />
+                  <div className="flex items-center gap-2 text-secondary">
                     <LayoutDashboard className="h-4 w-4" />
                     <span className="text-[10px] font-bold uppercase tracking-widest">Lowest Cost</span>
                   </div>
                   {cheapest ? (
                     <>
                       <p className="mt-2 truncate text-base font-bold text-foreground">{cheapest.subscription_name}</p>
-                      <p className="text-sm font-semibold text-green-500">${Number(cheapest.cost).toFixed(2)}/mo</p>
+                      <p className="text-sm font-semibold text-foreground">${Number(cheapest.cost).toFixed(2)}/mo</p>
                     </>
                   ) : (
                     <p className="mt-2 text-sm text-secondary">No active subscriptions yet.</p>
@@ -144,9 +137,9 @@ export function DashboardInsights({ subscriptions }: Props) {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4">
+              <div className="rounded-2xl border border-border/70 bg-secondary/5 p-4">
                 <div className="flex items-start gap-3">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-secondary/15 text-foreground">
                     <Lightbulb className="h-4 w-4" />
                   </div>
                   <p className="text-sm leading-relaxed text-secondary">

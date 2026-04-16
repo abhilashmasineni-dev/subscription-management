@@ -39,7 +39,7 @@ export function RestoreModal({ subscription, source }: Props) {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="flex w-full items-center gap-2 px-4 py-2 text-sm text-primary transition-colors hover:bg-primary/10"
+        className="flex w-full items-center gap-2 px-4 py-2 text-sm text-foreground transition-colors hover:bg-secondary/10"
       >
         <RotateCcw className="h-4 w-4" /> Restore
       </button>
@@ -57,7 +57,7 @@ export function RestoreModal({ subscription, source }: Props) {
               <div className="border-b border-border/80 px-6 py-5">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary/15 text-foreground">
                       <RotateCcw className="h-5 w-5" />
                     </div>
                     <div>
@@ -96,8 +96,8 @@ export function RestoreModal({ subscription, source }: Props) {
                 </div>
 
                 {source === 'expired' && (
-                  <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4">
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-primary">Important for expired items</p>
+                  <div className="rounded-2xl border border-border/70 bg-secondary/5 p-4">
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-foreground">Important for expired items</p>
                     <p className="text-sm text-secondary">
                       Restoring an expired item will move it back to Active. You should update the expiration date via Edit after restoring.
                     </p>
