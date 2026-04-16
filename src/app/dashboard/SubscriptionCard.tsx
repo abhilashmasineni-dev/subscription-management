@@ -1,7 +1,7 @@
 'use client'
 
 import { formatDistanceToNow, format } from 'date-fns'
-import { ExternalLink, MoreVertical, Trash2, Pause, Play } from 'lucide-react'
+import { Share2, MoreVertical, Trash2, Pause, Play } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '@/utils/cn'
 import { toggleSubscriptionStatus, softDeleteSubscription } from './actions'
@@ -47,7 +47,7 @@ export function SubscriptionCard({ subscription, tab }: Props) {
       
       return {
         isExpired: date < new Date(),
-        formattedDate: format(date, 'MMM d, yyyy'),
+        formattedDate: format(date, "EEEE,MMM d,yyyy.h:mm a"),
         relativeTime: formatDistanceToNow(date, { addSuffix: true }),
         isValid: true
       }
@@ -120,7 +120,7 @@ export function SubscriptionCard({ subscription, tab }: Props) {
           )}
           
           <div className="flex min-w-0 items-center gap-2">
-            <h3 className="min-w-0 truncate text-2xl font-bold tracking-tight text-foreground">
+            <h3 className="min-w-0 truncate text-[28px] font-bold font-serif tracking-tight text-foreground">
               {subscription.subscription_name?.toLowerCase() || 'unnamed'}
             </h3>
             {websiteUrl ? (
@@ -129,16 +129,16 @@ export function SubscriptionCard({ subscription, tab }: Props) {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Visit ${subscription.subscription_name} website`}
-                className="rounded-full bg-white/10 p-1.5 text-white transition-colors hover:bg-white/20"
+                className="mt-1 rounded-full bg-black p-2 text-white shadow-md transition-colors hover:bg-black/80 ring-1 ring-white/10"
               >
-                <ExternalLink className="h-4 w-4" />
+                <Share2 className="h-4 w-4" strokeWidth={3} />
               </a>
             ) : (
               <span
                 title="No valid website link"
-                className="cursor-not-allowed rounded-full bg-white/5 p-1.5 text-white/40"
+                className="mt-1 cursor-not-allowed rounded-full bg-black p-2 text-white/40 shadow-md ring-1 ring-white/5"
               >
-                <ExternalLink className="h-4 w-4" />
+                <Share2 className="h-4 w-4" strokeWidth={3} />
               </span>
             )}
           </div>
@@ -194,21 +194,24 @@ export function SubscriptionCard({ subscription, tab }: Props) {
       </div>
 
       {/* Bottom Section: Cost and Renewal Info */}
-      <div className="mt-8 flex items-end justify-between border-t border-border/40 pt-5">
-        <div className="flex items-baseline gap-1">
-          <span className="text-2xl font-bold tracking-tight text-foreground">
-            {subscription.currency === 'USD' ? '$' : subscription.currency}
-            {subscription.cost}
-          </span>
-          <span className="text-sm font-medium text-secondary">/mo</span>
+      <div className="mt-12 flex items-end justify-between">
+        <div className="flex flex-col gap-0.5">
+          <span className="text-[13px] font-serif uppercase tracking-[0.05em] text-foreground">COST</span>
+          <div className="flex items-baseline font-serif">
+            <span className="text-3xl font-bold tracking-tight text-foreground">
+              {subscription.currency === 'USD' ? '$' : subscription.currency}
+              {subscription.cost}
+            </span>
+            <span className="text-lg font-bold text-foreground">/mo</span>
+          </div>
         </div>
 
-        <div className="min-w-0 text-right">
-          <p className={cn("truncate text-sm font-semibold", isExpired && isValid ? 'text-red-500' : 'text-foreground')}>
+        <div className="min-w-0 text-right font-serif">
+          <p className={cn("truncate text-lg", isExpired && isValid ? 'text-red-500' : 'text-foreground')}>
             {isExpired ? 'Expired' : 'Renews'} {relativeTime}
           </p>
-          <p className="truncate text-xs font-medium text-secondary mt-0.5">
-            {formattedDate}
+          <p className="truncate text-[15px] font-bold text-foreground">
+            on {formattedDate.toLowerCase().replace(' am', ' AM').replace(' pm', ' PM')}
           </p>
         </div>
       </div>
