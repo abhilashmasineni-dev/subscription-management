@@ -44,13 +44,13 @@ export function EditSubscriptionModal({ subscription }: Props) {
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-background/60 backdrop-blur-sm"
             onClick={() => !isPending && setIsOpen(false)}
           />
-          
-          <div className="relative w-full max-w-2xl overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-2xl animate-in zoom-in-95 duration-200">
+
+          <div className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-2xl animate-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between border-b border-border pb-4">
               <h2 className="text-xl font-bold text-foreground">Edit Subscription</h2>
               <button
@@ -74,31 +74,33 @@ export function EditSubscriptionModal({ subscription }: Props) {
             >
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="sm:col-span-2">
-                  <label htmlFor="subscription_name" className="text-xs font-semibold uppercase tracking-wider text-secondary">
+                  <label htmlFor="edit_subscription_name" className="text-xs font-semibold uppercase tracking-wider text-secondary">
                     Subscription Name
                   </label>
                   <input
                     required
                     name="subscription_name"
-                    id="subscription_name"
+                    id="edit_subscription_name"
+                    placeholder="e.g. Netflix, Spotify"
                     defaultValue={subscription.subscription_name}
                     className="mt-1 block w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:ring-1 focus:ring-primary"
                   />
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label htmlFor="website_link" className="text-xs font-semibold uppercase tracking-wider text-secondary">
+                  <label htmlFor="edit_website_link" className="text-xs font-semibold uppercase tracking-wider text-secondary">
                     Website Link (Optional)
                   </label>
                   <input
                     name="website_link"
-                    id="website_link"
-                    defaultValue={subscription.website_link}
+                    id="edit_website_link"
+                    placeholder="https://..."
+                    defaultValue={subscription.website_link || ''}
                     className="mt-1 block w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:ring-1 focus:ring-primary"
                   />
                 </div>
 
-                <div className="sm:col-span-2">
+                <div>
                   <label htmlFor="edit_expiration_date" className="text-xs font-semibold uppercase tracking-wider text-secondary">
                     Next Expiration / Renewal
                   </label>
@@ -116,7 +118,7 @@ export function EditSubscriptionModal({ subscription }: Props) {
                 </div>
 
                 <div>
-                  <label htmlFor="cost" className="text-xs font-semibold uppercase tracking-wider text-secondary">
+                  <label htmlFor="edit_cost" className="text-xs font-semibold uppercase tracking-wider text-secondary">
                     Monthly Cost
                   </label>
                   <div className="relative mt-1">
@@ -127,20 +129,21 @@ export function EditSubscriptionModal({ subscription }: Props) {
                       step="0.01"
                       min="0"
                       name="cost"
-                      id="cost"
+                      id="edit_cost"
+                      placeholder="0.00"
                       defaultValue={subscription.cost}
                       className="block w-full rounded-lg border border-border bg-background pl-7 pr-3 py-2 text-foreground focus:border-primary focus:ring-1 focus:ring-primary"
                     />
                   </div>
                 </div>
 
-                <div>
-                  <label htmlFor="currency" className="text-xs font-semibold uppercase tracking-wider text-secondary">
+                <div className="sm:col-span-2">
+                  <label htmlFor="edit_currency" className="text-xs font-semibold uppercase tracking-wider text-secondary">
                     Currency
                   </label>
                   <select
                     name="currency"
-                    id="currency"
+                    id="edit_currency"
                     defaultValue={subscription.currency}
                     className="mt-1 block w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:ring-1 focus:ring-primary"
                   >
