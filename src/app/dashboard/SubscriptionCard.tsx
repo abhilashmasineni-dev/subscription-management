@@ -93,7 +93,7 @@ export function SubscriptionCard({ subscription, tab }: Props) {
   return (
     <div
       className={cn(
-        'group relative rounded-[2rem] border border-border/50 bg-[#0a0a0a] pt-6 px-6 pb-5 transition-all hover:border-primary/50 hover:shadow-2xl',
+        'group relative rounded-3xl border border-border bg-card px-6 pb-5 pt-6 transition-all hover:border-primary/40',
         subscription.status === 'disabled' && 'opacity-60 grayscale-[0.5]'
       )}
     >
@@ -105,7 +105,7 @@ export function SubscriptionCard({ subscription, tab }: Props) {
               <img
                 src={logoUrl!}
                 onError={() => setLogoError(true)}
-                className="h-12 w-12 rounded-2xl bg-white/5 object-contain p-2 shadow-inner"
+                className="h-12 w-12 rounded-2xl bg-white/5 object-contain p-2"
                 alt=""
               />
             </div>
@@ -118,7 +118,7 @@ export function SubscriptionCard({ subscription, tab }: Props) {
           )}
           
           <div className="flex min-w-0 items-center gap-2">
-            <h3 className="min-w-0 truncate text-2xl font-bold tracking-tight text-white font-serif">
+            <h3 className="min-w-0 truncate text-2xl font-bold tracking-tight text-foreground">
               {subscription.subscription_name?.toLowerCase() || 'unnamed'}
             </h3>
             {websiteUrl ? (
@@ -198,7 +198,7 @@ export function SubscriptionCard({ subscription, tab }: Props) {
             COST
           </p>
           <div className="flex items-baseline gap-1">
-            <span className="text-3xl font-bold text-white">
+              <span className="text-3xl font-bold text-foreground">
               {subscription.currency === 'USD' ? '$' : subscription.currency}
               {subscription.cost}
             </span>

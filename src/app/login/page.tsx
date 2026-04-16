@@ -6,15 +6,10 @@ export default async function LoginPage(props: {
 }) {
   const searchParams = await props.searchParams
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-10">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-[-120px] h-[340px] w-[340px] -translate-x-1/2 rounded-full bg-primary/20 blur-3xl" />
-        <div className="absolute bottom-[-130px] right-[-90px] h-[260px] w-[260px] rounded-full bg-blue-500/10 blur-3xl" />
-      </div>
-
-      <div className="relative w-full max-w-5xl overflow-hidden rounded-3xl border border-border/70 bg-card shadow-2xl">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
+      <div className="w-full max-w-5xl overflow-hidden rounded-3xl border border-border/70 bg-card shadow-2xl">
         <div className="grid md:grid-cols-2">
-          <section className="hidden border-r border-border/70 bg-gradient-to-b from-primary/15 to-background p-8 md:flex md:flex-col md:justify-between">
+          <section className="hidden border-r border-border/70 bg-[#0d0d0d] p-8 md:flex md:flex-col md:justify-between">
             <div>
               <p className="inline-flex rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-primary">
                 SubTracker
@@ -24,7 +19,7 @@ export default async function LoginPage(props: {
                 Track costs, monitor expiration dates, and manage active, paused, expired, and deleted subscriptions in one place.
               </p>
             </div>
-            <div className="rounded-2xl border border-border/70 bg-background/60 p-4">
+            <div className="rounded-2xl border border-border/70 bg-background/40 p-4">
               <p className="text-xs font-semibold uppercase tracking-wider text-secondary">Why users love it</p>
               <ul className="mt-3 space-y-2 text-sm text-foreground">
                 <li>- Real-time renewal alerts</li>
@@ -61,7 +56,7 @@ export default async function LoginPage(props: {
                     type="email"
                     autoComplete="email"
                     required
-                    className="mt-1.5 block w-full rounded-xl border border-border bg-background px-3 py-2.5 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                    className="mt-1.5 block w-full rounded-xl border border-border bg-[#0d0d0d] px-3 py-2.5 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     placeholder="you@example.com"
                   />
                 </div>
@@ -78,7 +73,7 @@ export default async function LoginPage(props: {
                     type="password"
                     autoComplete="current-password"
                     required
-                    className="mt-1.5 block w-full rounded-xl border border-border bg-background px-3 py-2.5 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                    className="mt-1.5 block w-full rounded-xl border border-border bg-[#0d0d0d] px-3 py-2.5 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     placeholder="Enter your password"
                   />
                 </div>
