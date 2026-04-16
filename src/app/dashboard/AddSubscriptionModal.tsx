@@ -101,9 +101,12 @@ export function AddSubscriptionModal() {
             onClick={() => !isPending && setIsOpen(false)}
           />
           
-          <div className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-2xl animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between border-b border-border pb-4">
-              <h2 className="text-xl font-bold text-foreground">Add New Subscription</h2>
+          <div className="relative w-full max-w-2xl overflow-hidden rounded-3xl border border-border/70 bg-card shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b border-border/80 px-6 py-5">
+              <div>
+                <h2 className="text-xl font-bold tracking-tight text-foreground">Add New Subscription</h2>
+                <p className="mt-1 text-sm text-secondary">Fill in the details below to start tracking this service.</p>
+              </div>
               <button
                 onClick={() => setIsOpen(false)}
                 disabled={isPending}
@@ -114,16 +117,18 @@ export function AddSubscriptionModal() {
             </div>
 
             {error && (
-              <div className="mt-4 rounded-lg bg-red-500/10 p-3 text-sm text-red-500">
+              <div className="mx-6 mt-4 rounded-lg bg-red-500/10 p-3 text-sm text-red-500">
                 {error}
               </div>
             )}
 
             <form
               action={handleSubmit}
-              className="mt-6 space-y-4"
+              className="space-y-5 px-6 py-6"
             >
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="rounded-2xl border border-border/70 bg-background/30 p-4">
+                <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-secondary">Basic Information</p>
+                <div className="grid grid-cols-1 gap-4">
                 <div className="sm:col-span-2">
                   <label htmlFor="subscription_name" className="text-xs font-semibold uppercase tracking-wider text-secondary">
                     Subscription Name
@@ -136,7 +141,50 @@ export function AddSubscriptionModal() {
                     className="mt-1 block w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:ring-1 focus:ring-primary"
                   />
                 </div>
+                </div>
+              </div>
 
+              <div className="rounded-2xl border border-border/70 bg-background/30 p-4">
+                <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-secondary">Billing Schedule</p>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="start_date" className="text-xs font-semibold uppercase tracking-wider text-secondary">
+                    Start Date
+                  </label>
+                  <input
+                    required
+                    type="date"
+                    name="start_date"
+                    id="start_date"
+                    defaultValue={new Date().toISOString().split('T')[0]}
+                    className="mt-1 block w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:ring-1 focus:ring-primary"
+                  />
+                  <p className="mt-1.5 text-[10px] leading-tight text-secondary">
+                    The day you first signed up.
+                  </p>
+                </div>
+
+                <div>
+                  <label htmlFor="expiration_date" className="text-xs font-semibold uppercase tracking-wider text-secondary">
+                    Next Expiration / Renewal
+                  </label>
+                  <input
+                    required
+                    type="datetime-local"
+                    name="expiration_date"
+                    id="expiration_date"
+                    className="mt-1 block w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:ring-1 focus:ring-primary"
+                  />
+                  <p className="mt-1.5 text-[10px] leading-tight font-medium text-primary">
+                    Set the exact renewal time for reminder alerts.
+                  </p>
+                </div>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-border/70 bg-background/30 p-4">
+                <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-secondary">Pricing</p>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="sm:col-span-2">
                   <label htmlFor="website_link" className="text-xs font-semibold uppercase tracking-wider text-secondary">
                     Website Link (Optional)
@@ -168,39 +216,6 @@ export function AddSubscriptionModal() {
                   {websiteError && (
                     <p className="mt-1.5 text-[10px] leading-tight text-red-500">{websiteError}</p>
                   )}
-                </div>
-
-                <div>
-                  <label htmlFor="start_date" className="text-xs font-semibold uppercase tracking-wider text-secondary">
-                    Start Date
-                  </label>
-                  <input
-                    required
-                    type="date"
-                    name="start_date"
-                    id="start_date"
-                    defaultValue={new Date().toISOString().split('T')[0]}
-                    className="mt-1 block w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:ring-1 focus:ring-primary"
-                  />
-                  <p className="mt-1.5 text-[10px] leading-tight text-secondary">
-                    The day you first signed up. We use this to calculate your subscription history.
-                  </p>
-                </div>
-
-                <div>
-                  <label htmlFor="expiration_date" className="text-xs font-semibold uppercase tracking-wider text-secondary">
-                    Next Expiration / Renewal
-                  </label>
-                  <input
-                    required
-                    type="datetime-local"
-                    name="expiration_date"
-                    id="expiration_date"
-                    className="mt-1 block w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:ring-1 focus:ring-primary"
-                  />
-                  <p className="mt-1.5 text-[10px] leading-tight text-primary font-medium">
-                    Critical: Set this to the exact time your next payment is due. You will get a real-time alert 1 minute before this time.
-                  </p>
                 </div>
 
                 <div>
@@ -238,20 +253,21 @@ export function AddSubscriptionModal() {
                   </select>
                 </div>
               </div>
+              </div>
 
-              <div className="mt-8 flex justify-end gap-3 pt-4 border-t border-border">
+              <div className="mt-2 flex flex-col-reverse gap-2 border-t border-border pt-4 sm:flex-row sm:justify-end">
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
                   disabled={isPending}
-                  className="rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground hover:bg-secondary/10"
+                  className="rounded-xl border border-border px-4 py-2.5 text-sm font-semibold text-foreground hover:bg-secondary/10"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isPending || websiteStatus === 'checking' || websiteStatus === 'invalid'}
-                  className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 disabled:opacity-50"
+                  className="flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 disabled:opacity-50"
                 >
                   {isPending ? (
                     <>
