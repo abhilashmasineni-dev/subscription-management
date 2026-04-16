@@ -1,8 +1,8 @@
-import { login } from '../auth/actions'
-import { LogIn } from 'lucide-react'
+import { signup } from '../auth/actions'
+import { UserPlus } from 'lucide-react'
 import Link from 'next/link'
 
-export default async function LoginPage(props: {
+export default async function SignupPage(props: {
   searchParams: Promise<{ error?: string }>
 }) {
   const searchParams = await props.searchParams
@@ -11,8 +11,8 @@ export default async function LoginPage(props: {
       <section className="w-full max-w-md rounded-3xl border border-border/70 bg-card p-7 shadow-2xl sm:p-8">
         <div className="text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-secondary">SubTracker</p>
-          <h1 className="mt-3 text-3xl font-bold tracking-tight text-foreground">Welcome Back</h1>
-          <p className="mt-2 text-sm text-secondary">Sign in to your account to continue.</p>
+          <h1 className="mt-3 text-3xl font-bold tracking-tight text-foreground">Create Account</h1>
+          <p className="mt-2 text-sm text-secondary">Sign up for a new account to get started.</p>
         </div>
 
         {searchParams.error && (
@@ -51,27 +51,27 @@ export default async function LoginPage(props: {
                 id="password"
                 name="password"
                 type="password"
-                autoComplete="current-password"
+                autoComplete="new-password"
                 required
                 className="mt-1.5 block w-full rounded-xl border border-border bg-[#0d0d0d] px-3 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                placeholder="Enter your password"
+                placeholder="Create a password"
               />
             </div>
           </div>
 
           <button
-            formAction={login}
+            formAction={signup}
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50"
           >
-            <LogIn className="h-4 w-4" />
-            Sign In
+            <UserPlus className="h-4 w-4" />
+            Create Account
           </button>
         </form>
 
         <p className="mt-6 text-center text-sm text-secondary">
-          Don't have an account?{' '}
-          <Link href="/signup" className="font-medium text-foreground hover:underline">
-            Sign up
+          Already have an account?{' '}
+          <Link href="/login" className="font-medium text-foreground hover:underline">
+            Sign in
           </Link>
         </p>
 
