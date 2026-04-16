@@ -102,6 +102,7 @@ export function SubscriptionCard({ subscription, tab }: Props) {
         <div className="flex min-w-0 items-center gap-3">
           {domain && !logoError ? (
             <div className="relative shrink-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={logoUrl!}
                 onError={() => setLogoError(true)}

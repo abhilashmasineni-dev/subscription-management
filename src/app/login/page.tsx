@@ -69,7 +69,7 @@ export default async function LoginPage(props: {
         </form>
 
         <p className="mt-6 text-center text-sm text-secondary">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <Link href="/signup" className="font-medium text-foreground hover:underline">
             Sign up
           </Link>
