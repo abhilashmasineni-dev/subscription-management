@@ -94,7 +94,8 @@ export function SubscriptionCard({ subscription, tab }: Props) {
     <div
       className={cn(
         'group relative rounded-3xl border border-border bg-card px-6 pb-5 pt-6 transition-all hover:border-primary/40',
-        subscription.status === 'disabled' && 'opacity-60 grayscale-[0.5]'
+        subscription.status === 'disabled' && !isMenuOpen && 'opacity-60 grayscale-[0.5] hover:opacity-100',
+        subscription.status === 'disabled' && isMenuOpen && 'grayscale-[0.5]'
       )}
     >
       {/* Top Section: Logo, Name, Share, Menu */}
