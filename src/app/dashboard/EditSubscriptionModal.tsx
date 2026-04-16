@@ -117,21 +117,16 @@ export function EditSubscriptionModal({ subscription }: Props) {
               onClick={() => !isPending && setIsOpen(false)}
             />
 
-            <div className="relative w-full max-w-2xl overflow-hidden rounded-3xl border border-border/80 bg-card shadow-2xl animate-in zoom-in-95 duration-200">
-              <div className="flex items-center justify-between border-b border-border/80 px-6 py-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-background/60 text-foreground">
-                    <Pencil className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-semibold tracking-tight text-foreground">Edit Subscription</h2>
-                    <p className="mt-0.5 text-xs text-secondary">Update service details and billing schedule.</p>
-                  </div>
+            <div className="relative w-full max-w-2xl overflow-hidden rounded-3xl border border-border/70 bg-card shadow-2xl animate-in zoom-in-95 duration-200">
+              <div className="flex items-center justify-between border-b border-border/80 px-6 py-5">
+                <div>
+                  <h2 className="text-xl font-bold tracking-tight text-foreground">Edit Subscription</h2>
+                  <p className="mt-1 text-sm text-secondary">Update service details and billing schedule.</p>
                 </div>
                 <button
                   onClick={() => setIsOpen(false)}
                   disabled={isPending}
-                  className="rounded-full p-1.5 text-secondary transition-colors hover:bg-secondary/10 hover:text-foreground"
+                  className="rounded-full p-1 text-secondary hover:bg-secondary/10 hover:text-foreground"
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -147,8 +142,8 @@ export function EditSubscriptionModal({ subscription }: Props) {
                 action={handleSubmit}
                 className="space-y-5 px-6 py-6"
               >
-                <div className="rounded-2xl border border-border/80 bg-background/20 p-4">
-                  <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-secondary">Basic</p>
+                <div className="rounded-2xl border border-border/70 bg-background/30 p-4">
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-secondary">Basic Information</p>
                   <div className="grid grid-cols-1 gap-4">
                     <div className="sm:col-span-2">
                       <label htmlFor="subscription_name" className="text-xs font-semibold uppercase tracking-wider text-secondary">
@@ -160,14 +155,14 @@ export function EditSubscriptionModal({ subscription }: Props) {
                         id="subscription_name"
                         defaultValue={subscription.subscription_name}
                         placeholder="e.g. Netflix, Spotify"
-                        className="mt-1 block w-full rounded-xl border border-border bg-[#0d0d0d] px-3 py-2.5 text-foreground focus:border-primary focus:ring-1 focus:ring-primary"
+                        className="mt-1 block w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:ring-1 focus:ring-primary"
                       />
                     </div>
                   </div>
                 </div>
 
-                <div className="rounded-2xl border border-border/80 bg-background/20 p-4">
-                  <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-secondary">Schedule</p>
+                <div className="rounded-2xl border border-border/70 bg-background/30 p-4">
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-secondary">Billing Schedule</p>
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
                       <label htmlFor="start_date" className="text-xs font-semibold uppercase tracking-wider text-secondary">
@@ -179,7 +174,7 @@ export function EditSubscriptionModal({ subscription }: Props) {
                         name="start_date"
                         id="start_date"
                         defaultValue={subscription.start_date || new Date().toISOString().split('T')[0]}
-                        className="mt-1 block w-full rounded-xl border border-border bg-[#0d0d0d] px-3 py-2.5 text-foreground focus:border-primary focus:ring-1 focus:ring-primary"
+                        className="mt-1 block w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:ring-1 focus:ring-primary"
                       />
                       <p className="mt-1.5 text-[10px] leading-tight text-secondary">
                         The day you first signed up.
@@ -196,17 +191,17 @@ export function EditSubscriptionModal({ subscription }: Props) {
                         name="expiration_date"
                         id="expiration_date"
                         defaultValue={new Date(subscription.expiration_date).toISOString().slice(0, 16)}
-                        className="mt-1 block w-full rounded-xl border border-border bg-[#0d0d0d] px-3 py-2.5 text-foreground focus:border-primary focus:ring-1 focus:ring-primary"
+                        className="mt-1 block w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:ring-1 focus:ring-primary"
                       />
-                      <p className="mt-1.5 text-[10px] leading-tight text-secondary">
+                      <p className="mt-1.5 text-[10px] leading-tight font-medium text-primary">
                         Set the exact renewal time for reminder alerts.
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="rounded-2xl border border-border/80 bg-background/20 p-4">
-                  <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-secondary">Pricing</p>
+                <div className="rounded-2xl border border-border/70 bg-background/30 p-4">
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-secondary">Pricing</p>
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div className="sm:col-span-2">
                       <label htmlFor="website_link" className="text-xs font-semibold uppercase tracking-wider text-secondary">
@@ -227,7 +222,7 @@ export function EditSubscriptionModal({ subscription }: Props) {
                           validateWebsiteFormat(websiteLink)
                         }}
                         placeholder="https://..."
-                        className={`mt-1 block w-full rounded-xl border bg-[#0d0d0d] px-3 py-2.5 text-foreground focus:ring-1 ${
+                        className={`mt-1 block w-full rounded-lg border bg-background px-3 py-2 text-foreground focus:ring-1 ${
                           websiteStatus === 'invalid'
                             ? 'border-red-500 text-red-500 focus:border-red-500 focus:ring-red-500'
                             : 'border-border focus:border-primary focus:ring-primary'
@@ -256,7 +251,7 @@ export function EditSubscriptionModal({ subscription }: Props) {
                           id="cost"
                           defaultValue={subscription.cost}
                           placeholder="0.00"
-                          className="block w-full rounded-xl border border-border bg-[#0d0d0d] py-2.5 pl-7 pr-3 text-foreground focus:border-primary focus:ring-1 focus:ring-primary"
+                          className="block w-full rounded-lg border border-border bg-background pl-7 pr-3 py-2 text-foreground focus:border-primary focus:ring-1 focus:ring-primary"
                         />
                       </div>
                     </div>
@@ -269,7 +264,7 @@ export function EditSubscriptionModal({ subscription }: Props) {
                         name="currency"
                         id="currency"
                         defaultValue={subscription.currency}
-                        className="mt-1 block w-full rounded-xl border border-border bg-[#0d0d0d] px-3 py-2.5 text-foreground focus:border-primary focus:ring-1 focus:ring-primary"
+                        className="mt-1 block w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:ring-1 focus:ring-primary"
                       >
                         <option value="USD">USD ($)</option>
                         <option value="EUR">EUR (€)</option>
