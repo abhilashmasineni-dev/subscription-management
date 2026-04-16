@@ -74,7 +74,20 @@ export function SubscriptionCard({ subscription, tab }: Props) {
     }
   }
 
+  const getSafeWebsiteUrl = (url?: string) => {
+    if (!url) return null
+    try {
+      const normalized = url.startsWith('http') ? url : `https://${url}`
+      const parsed = new URL(normalized)
+      if (!['http:', 'https:'].includes(parsed.protocol)) return null
+      return parsed.toString()
+    } catch {
+      return null
+    }
+  }
+
   const domain = getDomain(subscription.website_link)
+  const websiteUrl = getSafeWebsiteUrl(subscription.website_link)
   const logoUrl = domain ? `https://www.google.com/s2/favicons?domain=${domain}&sz=128` : null
 
   return (
@@ -108,9 +121,24 @@ export function SubscriptionCard({ subscription, tab }: Props) {
             <h3 className="min-w-0 truncate text-2xl font-bold tracking-tight text-white font-serif">
               {subscription.subscription_name?.toLowerCase() || 'unnamed'}
             </h3>
-            <div className="rounded-full bg-white/10 p-1.5 text-white transition-colors hover:bg-white/20">
-              <ExternalLink className="h-4 w-4" />
-            </div>
+            {websiteUrl ? (
+              <a
+                href={websiteUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Visit ${subscription.subscription_name} website`}
+                className="rounded-full bg-white/10 p-1.5 text-white transition-colors hover:bg-white/20"
+              >
+                <ExternalLink className="h-4 w-4" />
+              </a>
+            ) : (
+              <span
+                title="No valid website link"
+                className="cursor-not-allowed rounded-full bg-white/5 p-1.5 text-white/40"
+              >
+                <ExternalLink className="h-4 w-4" />
+              </span>
+            )}
           </div>
         </div>
 
