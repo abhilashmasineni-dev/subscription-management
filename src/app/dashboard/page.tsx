@@ -58,17 +58,6 @@ export default async function DashboardPage(props: {
       }
       subscriptions = data || []
       
-      // Calculate total spending
-      if (currentTab === 'active') {
-        totalSpending = subscriptions.reduce((sum, sub) => sum + Number(sub.cost), 0)
-      } else {
-        const { data: activeData } = await supabase
-          .from('active_subscriptions')
-          .select('cost')
-          .eq('user_id', user.id)
-          .eq('status', 'active')
-        totalSpending = activeData?.reduce((sum, sub) => sum + Number(sub.cost), 0) || 0
-      }
     } else if (currentTab === 'expired') {
       const { data, error } = await supabase
         .from('expired_subscriptions')
@@ -91,13 +80,17 @@ export default async function DashboardPage(props: {
     }
 
     // Always fetch active subscriptions for Insights summary
-    const { data: insightsData } = await supabase
-      .from('active_subscriptions')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('status', 'active')
-    
-    activeSubscriptions = insightsData || []
+    if (currentTab === 'active') {
+      activeSubscriptions = subscriptions
+    } else {
+      const { data: insightsData } = await supabase
+        .from('active_subscriptions')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('status', 'active')
+      activeSubscriptions = insightsData || []
+    }
+
     totalSpending = activeSubscriptions.reduce((sum, sub) => sum + Number(sub.cost), 0)
   } catch (err) {
     console.error('Dashboard fetch error:', err)

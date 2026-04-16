@@ -12,45 +12,66 @@ export function AddSubscriptionModal() {
   const [websiteStatus, setWebsiteStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid'>('idle')
   const [websiteError, setWebsiteError] = useState<string | null>(null)
 
-  const validateWebsite = async (rawValue: string) => {
+  const validateWebsiteFormat = (rawValue: string) => {
     const value = rawValue.trim()
 
     if (!value) {
       setWebsiteStatus('idle')
       setWebsiteError(null)
-      return true
+      return { isValid: true, normalizedUrl: '' }
     }
 
-    setWebsiteStatus('checking')
-    setWebsiteError(null)
+    try {
+      const normalizedUrl = /^https?:\/\//i.test(value) ? value : `https://${value}`
+      const parsedUrl = new URL(normalizedUrl)
 
-    const result = await validateWebsiteLink(value)
-
-    if (result.isValid) {
-      setWebsiteStatus('valid')
-      if (result.normalizedUrl) {
-        setWebsiteLink(result.normalizedUrl)
+      if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+        setWebsiteStatus('invalid')
+        setWebsiteError('Only HTTP and HTTPS website links are allowed.')
+        return { isValid: false, normalizedUrl: '' }
       }
-      return true
-    }
 
-    setWebsiteStatus('invalid')
-    setWebsiteError(result.message || 'Website could not be validated.')
-    return false
+      setWebsiteStatus('valid')
+      setWebsiteError(null)
+      return { isValid: true, normalizedUrl: parsedUrl.toString() }
+    } catch {
+      setWebsiteStatus('invalid')
+      setWebsiteError('Please enter a valid website URL.')
+      return { isValid: false, normalizedUrl: '' }
+    }
   }
 
   const handleSubmit = async (formData: FormData) => {
     setError(null)
 
     const websiteValue = (formData.get('website_link') as string) || websiteLink
-    const websiteIsValid = await validateWebsite(websiteValue)
-    if (!websiteIsValid) {
+    const formatValidation = validateWebsiteFormat(websiteValue)
+    if (!formatValidation.isValid) {
       setError('Please fix the website link before saving.')
       return
     }
 
-    if (websiteLink.trim()) {
-      formData.set('website_link', websiteLink.trim())
+    if (formatValidation.normalizedUrl) {
+      formData.set('website_link', formatValidation.normalizedUrl)
+      setWebsiteLink(formatValidation.normalizedUrl)
+    }
+
+    setWebsiteStatus('checking')
+    setWebsiteError(null)
+
+    const reachabilityValidation = await validateWebsiteLink(formatValidation.normalizedUrl || '')
+    if (!reachabilityValidation.isValid) {
+      setWebsiteStatus('invalid')
+      setWebsiteError(reachabilityValidation.message || 'Website could not be reached.')
+      setError('Please fix the website link before saving.')
+      return
+    }
+
+    setWebsiteStatus('valid')
+
+    if (reachabilityValidation.normalizedUrl) {
+      formData.set('website_link', reachabilityValidation.normalizedUrl)
+      setWebsiteLink(reachabilityValidation.normalizedUrl)
     }
 
     startTransition(async () => {
@@ -132,7 +153,7 @@ export function AddSubscriptionModal() {
                       }
                     }}
                     onBlur={() => {
-                      void validateWebsite(websiteLink)
+                      validateWebsiteFormat(websiteLink)
                     }}
                     placeholder="https://..."
                     className={`mt-1 block w-full rounded-lg border bg-background px-3 py-2 text-foreground focus:ring-1 ${
