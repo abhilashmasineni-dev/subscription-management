@@ -70,87 +70,102 @@ export function DashboardInsights({ subscriptions }: Props) {
             onClick={() => setIsOpen(false)}
           />
           
-          <div className="relative w-full max-w-2xl overflow-hidden rounded-[2.5rem] border border-border bg-card p-6 shadow-2xl animate-in zoom-in-95 duration-300">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-500 text-white shadow-lg shadow-orange-500/20">
-                  <TrendingUp className="h-5 w-5" />
+          <div className="relative w-full max-w-3xl overflow-hidden rounded-3xl border border-border/70 bg-card shadow-2xl animate-in zoom-in-95 duration-300">
+            <div className="border-b border-border/80 px-6 py-5">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white shadow-lg shadow-primary/20">
+                    <TrendingUp className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold tracking-tight text-foreground">Spending Insights</h2>
+                    <p className="mt-1 text-sm text-secondary">A quick breakdown of your active subscription costs.</p>
+                  </div>
                 </div>
-                <h2 className="text-xl font-bold tracking-tight text-foreground">Spending Insights</h2>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="rounded-full p-2 text-secondary transition-colors hover:bg-secondary/10 hover:text-foreground"
+                >
+                  <X className="h-5 w-5" />
+                </button>
               </div>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="rounded-full p-2 text-secondary transition-colors hover:bg-secondary/10 hover:text-foreground"
-              >
-                <X className="h-6 w-6" />
-              </button>
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-3">
-              {/* Main Stats */}
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:col-span-2">
+            <div className="space-y-6 px-6 py-6">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="rounded-2xl border border-border/70 bg-secondary/5 p-4">
+                  <p className="text-[11px] font-semibold uppercase tracking-widest text-secondary">Active Subs</p>
+                  <p className="mt-2 text-2xl font-black text-foreground">{activeSubs.length}</p>
+                </div>
                 {stats.map((stat, i) => (
-                  <div key={i} className="flex flex-col justify-center rounded-2xl border border-border/50 bg-secondary/5 p-4 transition-all hover:bg-secondary/10">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className={cn("p-1.5 rounded-lg", stat.bg, stat.color)}>
+                  <div key={i} className="rounded-2xl border border-border/70 bg-secondary/5 p-4 transition-colors hover:bg-secondary/10">
+                    <div className="flex items-center gap-2">
+                      <div className={cn('rounded-lg p-1.5', stat.bg, stat.color)}>
                         {stat.icon}
                       </div>
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-secondary">{stat.label}</span>
+                      <p className="text-[11px] font-semibold uppercase tracking-widest text-secondary">{stat.label}</p>
                     </div>
-                    <p className="text-xl font-black text-foreground">{stat.value}</p>
+                    <p className="mt-2 text-xl font-black text-foreground">{stat.value}</p>
                   </div>
                 ))}
               </div>
 
-              {/* Highlight Cards */}
-              <div className="grid grid-cols-2 gap-3">
-                {/* Most Expensive */}
-                <div className="rounded-2xl border border-border/50 bg-orange-500/5 p-4 relative overflow-hidden group">
-                  <ArrowUpRight className="absolute -right-2 -top-2 h-12 w-12 text-orange-500/10 transition-transform group-hover:scale-110" />
-                  <div className="flex items-center gap-1.5 text-orange-500 mb-1">
-                    <Zap className="h-3 w-3" />
-                    <span className="text-[9px] font-bold uppercase tracking-widest">Premium</span>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="relative overflow-hidden rounded-2xl border border-orange-500/20 bg-orange-500/5 p-4">
+                  <ArrowUpRight className="absolute -right-3 -top-3 h-14 w-14 text-orange-500/10" />
+                  <div className="flex items-center gap-2 text-orange-500">
+                    <Zap className="h-4 w-4" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest">Highest Cost</span>
                   </div>
                   {mostExpensive ? (
                     <>
-                      <p className="text-sm font-bold text-foreground truncate">{mostExpensive.subscription_name}</p>
-                      <p className="text-xs font-semibold text-orange-500">${Number(mostExpensive.cost).toFixed(2)}/mo</p>
+                      <p className="mt-2 truncate text-base font-bold text-foreground">{mostExpensive.subscription_name}</p>
+                      <p className="text-sm font-semibold text-orange-500">${Number(mostExpensive.cost).toFixed(2)}/mo</p>
                     </>
                   ) : (
-                    <p className="text-xs text-secondary">No data</p>
+                    <p className="mt-2 text-sm text-secondary">No active subscriptions yet.</p>
                   )}
                 </div>
 
-                {/* Best Value */}
-                <div className="rounded-2xl border border-border/50 bg-green-500/5 p-4 relative overflow-hidden group">
-                  <ArrowDownRight className="absolute -right-2 -top-2 h-12 w-12 text-green-500/10 transition-transform group-hover:scale-110" />
-                  <div className="flex items-center gap-1.5 text-green-500 mb-1">
-                    <LayoutDashboard className="h-3 w-3" />
-                    <span className="text-[9px] font-bold uppercase tracking-widest">Value</span>
+                <div className="relative overflow-hidden rounded-2xl border border-green-500/20 bg-green-500/5 p-4">
+                  <ArrowDownRight className="absolute -right-3 -top-3 h-14 w-14 text-green-500/10" />
+                  <div className="flex items-center gap-2 text-green-500">
+                    <LayoutDashboard className="h-4 w-4" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest">Lowest Cost</span>
                   </div>
                   {cheapest ? (
                     <>
-                      <p className="text-sm font-bold text-foreground truncate">{cheapest.subscription_name}</p>
-                      <p className="text-xs font-semibold text-green-500">${Number(cheapest.cost).toFixed(2)}/mo</p>
+                      <p className="mt-2 truncate text-base font-bold text-foreground">{cheapest.subscription_name}</p>
+                      <p className="text-sm font-semibold text-green-500">${Number(cheapest.cost).toFixed(2)}/mo</p>
                     </>
                   ) : (
-                    <p className="text-xs text-secondary">No data</p>
+                    <p className="mt-2 text-sm text-secondary">No active subscriptions yet.</p>
                   )}
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Lightbulb className="h-4 w-4" />
+                  </div>
+                  <p className="text-sm leading-relaxed text-secondary">
+                    You have <span className="font-bold text-foreground">{activeSubs.length} active</span> subscriptions.
+                    {activeSubs.length > 5
+                      ? ' Consider reviewing underused services to reduce your yearly spend.'
+                      : ' Your subscription list looks manageable right now.'}
+                  </p>
                 </div>
               </div>
             </div>
 
-            {/* Tip Banner */}
-            <div className="mt-6 flex items-center gap-3 rounded-xl bg-primary/5 p-3 px-4 border border-primary/10">
-              <div className="flex shrink-0 h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <Lightbulb className="h-4 w-4" />
-              </div>
-              <p className="text-xs text-secondary leading-relaxed">
-                You have <span className="font-bold text-foreground">{activeSubs.length} active</span> subscriptions. 
-                {activeSubs.length > 5 
-                  ? " Try reviewing services to lower your yearly spend." 
-                  : " You're managing your recurring costs effectively!"}
-              </p>
+            <div className="border-t border-border/80 px-6 py-4">
+              <button
+                onClick={() => setIsOpen(false)}
+                className="w-full rounded-xl border border-border px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-secondary/10 sm:w-auto"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>
