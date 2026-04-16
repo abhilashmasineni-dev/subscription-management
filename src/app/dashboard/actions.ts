@@ -43,13 +43,18 @@ export async function addSubscription(formData: FormData) {
 export async function updateSubscription(id: string, formData: FormData) {
   const supabase = await createClient()
 
-  const updates = {
+  const updates: any = {
     subscription_name: formData.get('subscription_name') as string,
     website_link: formData.get('website_link') as string,
     expiration_date: formData.get('expiration_date') as string,
     cost: parseFloat(formData.get('cost') as string),
     currency: formData.get('currency') as string || 'USD',
     updated_at: new Date().toISOString(),
+  }
+
+  const startDate = formData.get('start_date') as string
+  if (startDate) {
+    updates.start_date = startDate
   }
 
   const { error } = await supabase
