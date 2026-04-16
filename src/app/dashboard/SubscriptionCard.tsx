@@ -47,7 +47,7 @@ export function SubscriptionCard({ subscription, tab }: Props) {
       
       return {
         isExpired: date < new Date(),
-        formattedDate: format(date, 'EEEE, MMM d, yyyy • p'),
+        formattedDate: format(date, 'MMM d, yyyy'),
         relativeTime: formatDistanceToNow(date, { addSuffix: true }),
         isValid: true
       }
@@ -194,26 +194,21 @@ export function SubscriptionCard({ subscription, tab }: Props) {
       </div>
 
       {/* Bottom Section: Cost and Renewal Info */}
-      <div className="mt-10 flex items-end justify-between">
-        <div className="space-y-1">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/50">
-            COST
-          </p>
-          <div className="flex items-baseline gap-1">
-              <span className="text-3xl font-bold text-foreground">
-              {subscription.currency === 'USD' ? '$' : subscription.currency}
-              {subscription.cost}
-            </span>
-            <span className="text-lg font-medium text-white/50">/mo</span>
-          </div>
+      <div className="mt-8 flex items-end justify-between border-t border-border/40 pt-5">
+        <div className="flex items-baseline gap-1">
+          <span className="text-2xl font-bold tracking-tight text-foreground">
+            {subscription.currency === 'USD' ? '$' : subscription.currency}
+            {subscription.cost}
+          </span>
+          <span className="text-sm font-medium text-secondary">/mo</span>
         </div>
 
-        <div className="min-w-0 text-right space-y-0.5">
-          <p className={cn("truncate text-base font-bold text-white", isExpired && isValid && 'text-red-500')}>
+        <div className="min-w-0 text-right">
+          <p className={cn("truncate text-sm font-semibold", isExpired && isValid ? 'text-red-500' : 'text-foreground')}>
             {isExpired ? 'Expired' : 'Renews'} {relativeTime}
           </p>
-          <p className="truncate text-sm font-bold text-white/70">
-            on {(formattedDate || 'N/A').toLowerCase()}
+          <p className="truncate text-xs font-medium text-secondary mt-0.5">
+            {formattedDate}
           </p>
         </div>
       </div>
