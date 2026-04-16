@@ -159,7 +159,7 @@ export function SubscriptionCard({ subscription, tab }: Props) {
                 className="fixed inset-0 z-10"
                 onClick={() => setIsMenuOpen(false)}
               />
-              <div className="absolute right-0 top-full z-20 mt-2 w-40 origin-top-right rounded-xl border border-border bg-card py-1 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <div className="absolute right-0 top-full z-20 mt-2 w-40 origin-top-right rounded-xl border border-border bg-background py-1 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
                 {tab === 'active' || tab === 'disabled' ? (
                   <>
                     <EditSubscriptionModal subscription={subscription} />
