@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useTransition } from 'react'
+import { useState, useTransition } from 'react'
 import { createPortal } from 'react-dom'
 import { Pencil, X, Loader2 } from 'lucide-react'
 import { updateSubscription } from './actions'
@@ -23,11 +23,6 @@ export function EditSubscriptionModal({ subscription }: Props) {
   const [isOpen, setIsOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
-  const [isMounted, setIsMounted] = useState(false)
-
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
 
   const handleSubmit = async (formData: FormData) => {
     setError(null)
@@ -50,8 +45,8 @@ export function EditSubscriptionModal({ subscription }: Props) {
         <Pencil className="h-4 w-4" /> Edit
       </button>
 
-      {isMounted &&
-        isOpen &&
+      {isOpen &&
+        typeof document !== 'undefined' &&
         createPortal(
           <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
             <div

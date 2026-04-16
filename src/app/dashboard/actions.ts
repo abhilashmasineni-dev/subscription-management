@@ -43,7 +43,17 @@ export async function addSubscription(formData: FormData) {
 export async function updateSubscription(id: string, formData: FormData) {
   const supabase = await createClient()
 
-  const updates: any = {
+  type SubscriptionUpdatePayload = {
+    subscription_name: string
+    website_link: string
+    expiration_date: string
+    cost: number
+    currency: string
+    updated_at: string
+    start_date?: string
+  }
+
+  const updates: SubscriptionUpdatePayload = {
     subscription_name: formData.get('subscription_name') as string,
     website_link: formData.get('website_link') as string,
     expiration_date: formData.get('expiration_date') as string,
