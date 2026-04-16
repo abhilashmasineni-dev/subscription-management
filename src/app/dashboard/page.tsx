@@ -144,10 +144,10 @@ export default async function DashboardPage(props: {
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Subscriptions
+            <h1 className="text-4xl font-extrabold tracking-tight text-foreground">
+              Dashboard
             </h1>
-            <p className="mt-2 text-sm text-secondary sm:text-base">
+            <p className="mt-2 text-lg text-secondary">
               Managing subscriptions for <span className="font-medium text-foreground">{user.email}</span>
             </p>
           </div>
@@ -156,27 +156,23 @@ export default async function DashboardPage(props: {
 
 
         <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <nav className="border-b border-border" aria-label="Subscription status tabs">
-            <div className="flex items-center gap-6 overflow-x-auto scrollbar-hide">
+          <div className="flex items-center gap-1 overflow-x-auto rounded-2xl border border-border bg-card p-1 scrollbar-hide">
             {tabs.map((tab) => (
               <a
                 key={tab.id}
                 href={`/dashboard?tab=${tab.id}&sortBy=${sortBy}&order=${searchParams.order || 'asc'}`}
                 className={cn(
-                  'flex items-center gap-2 whitespace-nowrap border-b-2 border-transparent px-1 py-3 text-sm font-semibold transition-colors',
+                  'flex items-center gap-2 whitespace-nowrap rounded-xl px-4 py-2.5 text-sm font-semibold transition-all',
                   currentTab === tab.id
-                    ? 'border-primary text-foreground'
-                    : 'text-secondary hover:text-foreground'
+                    ? 'bg-primary text-white'
+                    : 'text-secondary hover:bg-secondary/10 hover:text-foreground'
                 )}
-                role="tab"
-                aria-selected={currentTab === tab.id}
               >
                 <tab.icon className="h-4 w-4" />
                 {tab.label}
               </a>
             ))}
-            </div>
-          </nav>
+          </div>
 
           <DashboardInsights subscriptions={activeSubscriptions} />
         </div>
@@ -203,7 +199,7 @@ export default async function DashboardPage(props: {
             </div>
           </div>
         ) : subscriptions.length > 0 ? (
-          <div className="mt-8 grid gap-3">
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {subscriptions.map((sub) => (
               <SubscriptionCard key={sub.id} subscription={sub} tab={currentTab} />
             ))}

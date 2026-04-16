@@ -1,6 +1,6 @@
 'use client'
 
-import { differenceInCalendarDays, format } from 'date-fns'
+import { formatDistanceToNow, format } from 'date-fns'
 import { ExternalLink, MoreVertical, Trash2, Pause, Play } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '@/utils/cn'
@@ -44,25 +44,24 @@ export function SubscriptionCard({ subscription, tab }: Props) {
     try {
       const date = new Date(dateString)
       if (isNaN(date.getTime())) throw new Error('Invalid Date')
-      const daysRemaining = differenceInCalendarDays(date, new Date())
       
       return {
-        isExpired: daysRemaining < 0,
-        daysRemaining,
-        formattedDate: format(date, 'MMM d, yyyy • p'),
+        isExpired: date < new Date(),
+        formattedDate: format(date, 'EEEE, MMM d, yyyy • p'),
+        relativeTime: formatDistanceToNow(date, { addSuffix: true }),
         isValid: true
       }
     } catch {
       return {
         isExpired: false,
-        daysRemaining: null,
         formattedDate: 'N/A',
+        relativeTime: 'unknown time',
         isValid: false
       }
     }
   }
 
-  const { isExpired, daysRemaining, formattedDate, isValid } = getSafeDateInfo(subscription.expiration_date)
+  const { isExpired, formattedDate, relativeTime, isValid } = getSafeDateInfo(subscription.expiration_date)
   const [logoError, setLogoError] = useState(false)
 
   const getDomain = (url?: string) => {
@@ -90,23 +89,16 @@ export function SubscriptionCard({ subscription, tab }: Props) {
   const domain = getDomain(subscription.website_link)
   const websiteUrl = getSafeWebsiteUrl(subscription.website_link)
   const logoUrl = domain ? `https://www.google.com/s2/favicons?domain=${domain}&sz=128` : null
-  const statusTextClass = cn(
-    'text-sm font-medium',
-    !isValid && 'text-secondary',
-    isValid && daysRemaining !== null && daysRemaining < 0 && 'text-[var(--status-critical)]',
-    isValid && daysRemaining !== null && daysRemaining >= 0 && daysRemaining <= 14 && 'text-[var(--status-warning)]',
-    isValid && daysRemaining !== null && daysRemaining > 14 && 'text-[var(--status-active)]'
-  )
 
   return (
     <div
       className={cn(
-        'group relative rounded-lg border border-border bg-card p-4 transition-all hover:bg-background/60',
+        'group relative rounded-3xl border border-border bg-card px-6 pb-5 pt-6 transition-all hover:border-primary/40',
         subscription.status === 'disabled' && 'opacity-60 grayscale-[0.5]'
       )}
     >
       {/* Top Section: Logo, Name, Share, Menu */}
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
           {domain && !logoError ? (
             <div className="relative shrink-0">
@@ -126,7 +118,7 @@ export function SubscriptionCard({ subscription, tab }: Props) {
           )}
           
           <div className="flex min-w-0 items-center gap-2">
-            <h3 className="min-w-0 truncate text-lg font-semibold tracking-tight text-foreground">
+            <h3 className="min-w-0 truncate text-2xl font-bold tracking-tight text-foreground">
               {subscription.subscription_name?.toLowerCase() || 'unnamed'}
             </h3>
             {websiteUrl ? (
@@ -135,7 +127,7 @@ export function SubscriptionCard({ subscription, tab }: Props) {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Visit ${subscription.subscription_name} website`}
-                className="rounded-full bg-white/10 p-1.5 text-secondary transition-colors hover:text-foreground"
+                className="rounded-full bg-white/10 p-1.5 text-white transition-colors hover:bg-white/20"
               >
                 <ExternalLink className="h-4 w-4" />
               </a>
@@ -153,9 +145,9 @@ export function SubscriptionCard({ subscription, tab }: Props) {
         <div className="relative">
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="rounded-full p-2 text-secondary transition-colors hover:bg-secondary/10 hover:text-foreground"
+            className="rounded-full p-2 text-secondary transition-colors hover:bg-white/10 hover:text-white"
           >
-            <MoreVertical className="h-5 w-5" />
+            <MoreVertical className="h-6 w-6" />
           </button>
 
 
@@ -200,33 +192,26 @@ export function SubscriptionCard({ subscription, tab }: Props) {
       </div>
 
       {/* Bottom Section: Cost and Renewal Info */}
-      <div className="mt-5 space-y-3">
-        <div>
-          <p className="text-xs text-secondary">Provider</p>
-          <p className="truncate text-sm text-foreground">{domain || 'No website provided'}</p>
-        </div>
-
-        <div>
-          <p className="text-xs text-secondary">Renewal Date</p>
-          <p className="text-sm text-foreground">{formattedDate || 'N/A'}</p>
-        </div>
-
-        <div>
-          <p className="text-xs text-secondary">Next Charge</p>
-          <p className="text-sm text-foreground">
-            {subscription.currency === 'USD' ? '$' : `${subscription.currency} `}
-            {subscription.cost} per month
+      <div className="mt-10 flex items-end justify-between">
+        <div className="space-y-1">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/50">
+            COST
           </p>
+          <div className="flex items-baseline gap-1">
+              <span className="text-3xl font-bold text-foreground">
+              {subscription.currency === 'USD' ? '$' : subscription.currency}
+              {subscription.cost}
+            </span>
+            <span className="text-lg font-medium text-white/50">/mo</span>
+          </div>
         </div>
 
-        <div>
-          <p className="text-xs text-secondary">Days Remaining</p>
-          <p className={statusTextClass}>
-            {isValid && daysRemaining !== null
-              ? daysRemaining >= 0
-                ? `Expires in ${daysRemaining} days (${formattedDate})`
-                : `Expired ${Math.abs(daysRemaining)} days ago (${formattedDate})`
-              : 'Unknown'}
+        <div className="min-w-0 text-right space-y-0.5">
+          <p className={cn("truncate text-base font-bold text-white", isExpired && isValid && 'text-red-500')}>
+            {isExpired ? 'Expired' : 'Renews'} {relativeTime}
+          </p>
+          <p className="truncate text-sm font-bold text-white/70">
+            on {(formattedDate || 'N/A').toLowerCase()}
           </p>
         </div>
       </div>
